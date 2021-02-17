@@ -1,0 +1,118 @@
+* f_date
+* Build Tools
+** Flutter Utilities
+** Generating sources
+This project uses json-serializer to generate the necessary sources run
+#+begin_src sh
+flutter packages pub run build_runner build
+#+end_src
+
+** Flutter Commands
+These commands are useful for common house-keeping
+#+begin_src sh
+flutter clean
+#+end_src
+
+#+begin_src sh
+flutter packages pub upgrade
+#+end_src
+
+#+begin_src sh
+flutter pub run build_runner build
+#+end_src
+** Gradle
+In case you're working with the android code directly - or the gradle build files remember to change into the ./android/ directory to make use of ./android/gradlew for build commands
+Keep these commands in mind:
+#+begin_src sh
+cd ./android/
+./gradlew build --refresh-dependencies
+#+end_src
+and 
+#+begin_src sh
+cd ./android/
+./gradlew clean
+#+end_src
+* Application
+** Authentication
+Firebase - see the following for how things are setup 
+
+[[https://firebase.flutter.dev/docs/overview/#initializing-flutterfire]]
+[[https://firebase.flutter.dev/docs/auth/usage]]
+** Design/UI
+*** Font Considerations
+Experimenting with the following:
+- Hack
+- Source Sans Pro
+- Lato
+- Open Sans
+
+*** Color Theme
+TBD
+
+** Structure
+
+*** theme/
+The styles.dart used for styling widgets
+[[./lib/theme/theme.dart]]
+*** services/ - TODO
+Web APIs and native interaction code
+*** controllers/ - TODO
+Classes that act as messengers between the HTTP services and the widgets. They're responsible for telling the UI what the models are and what to render given a response.
+*** models/ - TODO
+Custom classes for objects used throughout the ap
+*** components/
+Custom widgets which are used in multiple screens (HOCs)
+
+*** blocs + blocprovs - TODO
+BLoCs and BLoC Providers respectively
+
+*** screens/ - In Progress
+Primary screen file for a given view and a folder for it's associated components (./components)
+
+*** match/
+Logic concerning existing matches, eg. chatting and profile viewing
+
+*** discover/
+Logic concerning discovering new profiles and applying likes/dislikes
+
+*** settings/
+Logic concerning application settings and account settings for accessibility, payment managements, etc. (distinct from profile configuration)
+
+*** profile/
+Logic concerning various configurable settings for a user (tbd.)
+
+*** graphs/
+Logic concerning the display of various statistical elements regarding the user profile relative to other profiles eg. measurements about which pictures on their profile are most popular, how they compare to other profiles in terms of 'success', and comparisions about their group type (determined by questionaires)
+
+*** questionaires/
+Logic concerning the display of various personality quizes used in establishing/quantifying traits on a particular user profile. This metric is used in organizing and prioritizing potential matches, as well as providing the prompt mechanic (during conversation initiation) to provide tangentially meaningful, but common-point introductions between users of the same or similar group type.
+
+* Business
+** Goals
+f_date is a dating application built in dart using the flutter ui framework. 
+What makes it distinct from other dating applications at a high-level is that f_date seeks to automate tedious aspects of the process dating cycle. F_date seeks to accomplish this by using short-form questionaires when a user profile is initialized (15-20 questions) to establish a baseline personality attribute which is used to measure compatibility as well as to give the user something to reflect on (ie. when the result of a myers-briggs test is issued, quiz-takers often share their results with others, laude themselves on belonging to a superior type, -> they get excited about belonging to a group which is perceived to be, in some measure, exclusive).
+
+Once a baseline is established, the user will be encouraged to take more assesments. This will be motivated by,
+    1. Greater qunatitative information on existing membership within a group, or establishing a new group membership
+    2. Shorter, more concise quiz format (includes pictures)
+    3. Increased profile publicity on the platform (since more information is available)
+    4. More data available to be reported on the /data screen
+
+These assesments inform two algoriths (models) that will be responsible for organizing matches and generating prompts (ice-breakers) when a conversation is intiated after a match.
+
+** Punchline
+Automated ice-breakers, personality based matching, encouraged by the human desire to have a simple answer to a difficult, yet entertaining question: "who am I" - and resultantly, give similar people better chances to meet and an easier way to get to know one another.
+
+* Personal Notes
+** Database/Modeling Considerations
+Current State:
+Not sure - I don't know enough about databases to make an informed decision. However, based on some recent research, a graph based database might be a good fit. These are relatively new however and so it's unlikely I'll be able to to use them effectively.
+There is currently no support for an API for any graph database for the latest stable dart release.
+I'll likely use some placeholder until I have a better understanding of graph databases and where they stand in teh dart ecosystem.
+
+
+* Resources
+** Programming
+[[~/notes/dart-in-action/dart-in-action.pdf]]
+[[~/notes/flutter_in_action/Flutter_in_Action.pdf]]
+
