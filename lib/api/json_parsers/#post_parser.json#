@@ -1,0 +1,8 @@
+/*
+
+  Sample 
+*/
+
+class PostParser extends JsonParser<Post> with ObjectDecoder<Post> {
+    
+}

@@ -10,6 +10,7 @@ in pkgs.mkShell {
     sqlite
     flutter-beta
     dart_dev
+    rubyPackages.cocoapods
   ];
 
   shellHook = ''
@@ -18,5 +19,6 @@ in pkgs.mkShell {
     export ANDROID_HOME=~/Android/Sdk
     export FLUTTER_SDK=${pkgs.flutter.unwrapped}
     export DART_SDK=${pkgs.dart_dev}
+    flutter pub run build_runner watch
   '';
 }

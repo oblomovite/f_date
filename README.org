@@ -1,11 +1,106 @@
 * f_date
-* Build Tools
+* TODO Application
+
+** TODO iOS Support
+Follow the guide here:
+https://flutter.dev/docs/deployment/ios
+
+Then setup firebase deps:
+https://console.firebase.google.com/u/0/project/f-date/overview
+
+** TODO Authentication 
+*** TODO Authentication - Email - Done
+*** TODO Authentication - Email+Link
+*** TODO Authentication - Google
+*** TODO Authentication - Apple 
+This option must be available on iOS devices per Apple guidelines
+*** TODO Authentication - Phone
+
+This is a priority authentication method
+** TODO Navigation
+*** TODO Login Screen to Home - Done
+*** TODO Bottom Tab bar navigation between main screens
+** TODO Routes
+*** TODO Quiz Page
+**** TODO State Considerations
+Will any user inputs need to be shared anywhere else?
+*** TODO Component Design
+-- What widgets should I use to accomplish this
+- Column
+  - Row ( Quiz Progress Bar ) -- indicates how far along the user is in the quiz
+  - Container ( Holds main activity area)
+    - Depeding on the type of question:
+        - 1. Row ( Question Content (Draggable(?))) -- (potentially drag the question into a region of the screen correspoding to a type of response - eg. drag up for 'strong agree', left for 'disagree')
+        - 1. Row ( Response Content (Clickable)) -- (click once to select, again to confirm. Or drag right)
+        - 2. Center ( prompt/image appears and then selectable/draggable tiles appear that can be used to complete the question )
+*** TODO Retreive json over http 
+I have a json representing the Myers-Briggs test in Firebase. I have to pull this documents and inflate UI elements with its contents
+
+*** TODO Application Settings Page
+*** TODO User Statistics Page
+*** TODO Matches Page
+*** TODO Edit Profile Page
+
+** TODO Models
+*** TODO Think about your data needs and try to model some documents
+
+** TODO CI/CD pipeline and production environment/deployment
+* TODO Business
+** TODO Figure out how to categorize personality traits and which ones to use
+eg. a person could either be outgoing or introverted and that would represented as:
+100% Introverted ---------x--- | --------x--- 100% Outgoing
+The x's represent the amount a given person is of each 
+
+Consider using netflix's categorizations of movies for personality 'taglines' 
+eg. 'Dark, stylish, quirky, offbeat', etc.
+
+This would make recommendation easier.
+
+** TODO Get a business email and update product support email in firebase console
+** TODO Research different types of personality assesments
+Some examples would be:
+1. Roarshach
+2. Word Association
+3. Personality quizes (meyer-briggs, what type of cat breed are you, etc.)
+4. etc.
+
+** TODO Figure out a logo/app-name
+Resources:
+- Look at books on symbology, specifically Literary Symbology
+
+Considerations:
+- do date
+- RE Date
+- Sum Date 
+  - sounds nice
+  - logo easy to pick
+- dodo date -> not sure
+- chimera (chimerism) -> from the species of angler fish that reproduces by genetic chimerism
+
+* Tools
+** Firebase CLI
+There's a lot you can do from the CLI - read about it:
+[[https://firebase.google.com/docs/cli#linux]]
+
+Push stuff to Firebase Firestore:
+#+begin_src sh
+firebase database:push /questionaire ./assets/quiz/mb-personality.json
+#+end_src
+
+
+
 ** Flutter Utilities
 ** Generating sources
-This project uses json-serializer to generate the necessary sources run
+This project uses json-serializer to generate the necessary sources run this as needed:
 #+begin_src sh
 flutter packages pub run build_runner build
 #+end_src
+
+To watch for file changes run: 
+#+begin_src sh
+flutter pub run build_runner watch
+#+end_src
+The above is in a shell.nix hook which will run with direnv
 
 ** Flutter Commands
 These commands are useful for common house-keeping
@@ -32,6 +127,18 @@ and
 cd ./android/
 ./gradlew clean
 #+end_src
+** SHA1/SHA256 Keys
+To obtain these keys for your application run the following:
+#+begin_src sh
+keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
+#+end_src
+Alternatively, you can do the same with gradle:
+#+begin_src sh
+cd ./android
+./gradlew signingReport
+#+end_src
+** API Key - Android Device Verification
+AIzaSyBoEriU7JU9sMr1vidvhF0ApSosaBtjWbs
 * Application
 ** Authentication
 Firebase - see the following for how things are setup 
@@ -50,41 +157,52 @@ Experimenting with the following:
 TBD
 
 ** Structure
-
+*** api/json-parsers/
+custom 'library' for convenience/conciseness of json decoding logic
+*** api/json-models/
+contains dart objects to be inflated by json
+*** api/http-client.dart
+use the =dio= package to make http-requests and store configuration here.
 *** theme/
 The styles.dart used for styling widgets
 [[./lib/theme/theme.dart]]
-*** services/ - TODO
+*** services/
 Web APIs and native interaction code
-*** controllers/ - TODO
-Classes that act as messengers between the HTTP services and the widgets. They're responsible for telling the UI what the models are and what to render given a response.
-*** models/ - TODO
-Custom classes for objects used throughout the ap
-*** components/
+*** controllers/
+Classes that act as messengers between the HTTP services and the widgets.
+They're responsible for telling the UI what the models are and what to render given a response.
+*** models/
+Objects to be inflated by database documents
+*** components/ + classes/ + widgets/
 Custom widgets which are used in multiple screens (HOCs)
+These provide organization, validation, and generally any other logic 
+that doesn't concern state management or network requests
+*** blocs/ 
+A pattern to maximize separation of UI and Business Logic to make the application
+more robust, platform-agnostic
+**** BLoCs
+Concern business objects and streams of data typically from http
+**** BLoC Providers
+Concern connecting the State of BLoCs accross pages and widgets
 
-*** blocs + blocprovs - TODO
-BLoCs and BLoC Providers respectively
-
-*** screens/ - In Progress
+*** screens/ + views/ + pages/ + routes/
 Primary screen file for a given view and a folder for it's associated components (./components)
-
-*** match/
+**** match/
 Logic concerning existing matches, eg. chatting and profile viewing
 
-*** discover/
+**** discover/
 Logic concerning discovering new profiles and applying likes/dislikes
 
-*** settings/
+**** settings/
 Logic concerning application settings and account settings for accessibility, payment managements, etc. (distinct from profile configuration)
 
-*** profile/
+**** profile/
 Logic concerning various configurable settings for a user (tbd.)
 
-*** graphs/
+**** graphs/
 Logic concerning the display of various statistical elements regarding the user profile relative to other profiles eg. measurements about which pictures on their profile are most popular, how they compare to other profiles in terms of 'success', and comparisions about their group type (determined by questionaires)
 
-*** questionaires/
+**** questionaires/
 Logic concerning the display of various personality quizes used in establishing/quantifying traits on a particular user profile. This metric is used in organizing and prioritizing potential matches, as well as providing the prompt mechanic (during conversation initiation) to provide tangentially meaningful, but common-point introductions between users of the same or similar group type.
 
 * Business
@@ -110,9 +228,361 @@ Not sure - I don't know enough about databases to make an informed decision. How
 There is currently no support for an API for any graph database for the latest stable dart release.
 I'll likely use some placeholder until I have a better understanding of graph databases and where they stand in teh dart ecosystem.
 
+** BLoC Providers
 
+To pass the =State= between widgets and pages, we use =*_bloc_provider=. These classes provide (share state) from BLoC classes. Specifically, we create a /static/ =of= method on a provider class to allow children widgets to get the instance of the of the given provider. 
+
+The =updateShouldNotify= method checks whether the value has changed, and the framework notifies widgets to rebuild where necessary. 
 * Resources
 ** Programming
 [[~/notes/dart-in-action/dart-in-action.pdf]]
 [[~/notes/flutter_in_action/Flutter_in_Action.pdf]]
 
+
+
+* Reference Snippets
+** Flutter 2.0 Navigation
+#+begin_src dart
+
+
+Future<void> main() async {
+  // Avoid errors caused by flutter upgrade.
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // TODO: Implement host specific ui options
+  if (kIsWeb) {
+    // running on the web!
+  } else {
+    // NOT running on the web! You can check for additional platforms here.
+
+  }
+  runApp(App());
+}
+
+// TODO! Initialize Firebase
+class App extends StatelessWidget {
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _initialization,
+      builder: (context, snapshot) {
+        // check for errors in initialization
+        if (snapshot.hasError) {
+          // Placeholder
+          return Text(
+            'Something went wrong with firebase init!',
+            style: Theme.of(context).textTheme.headline2,
+          );
+        }
+
+        // Show application once complete
+        if (snapshot.connectionState == ConnectionState.done) {
+          return BooksApp();
+        }
+
+        // Load in the meantime
+        return CircularProgressIndicator();
+      },
+    );
+  }
+}
+
+class PlatformCheck extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        home: Scaffold(
+            appBar: AppBar(title: Text('Detect Device is Android or iOS')),
+            body: Center(child: detectPlatform())));
+  }
+}
+
+class Book {
+  final String title;
+  final String author;
+  Book(this.title, this.author);
+}
+
+class BooksApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _BooksAppState();
+}
+
+class _BooksAppState extends State<BooksApp> {
+  // Todo move this out
+  BookRouterDelegate _routerDelegate = BookRouterDelegate();
+  BookRouteInformationParser _routeInformationParser =
+      BookRouteInformationParser();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: 'Books App',
+      routerDelegate: _routerDelegate,
+      routeInformationParser: _routeInformationParser,
+    );
+  }
+}
+
+class BookRouteInformationParser extends RouteInformationParser<BookRoutePath> {
+  @override
+  Future<BookRoutePath> parseRouteInformation(
+      RouteInformation routeInformation) async {
+    final uri = Uri.parse(routeInformation.location);
+    // handle '/'
+    if (uri.pathSegments.length == 0) {
+      return BookRoutePath.home();
+    }
+
+    // handle '/book/:id'
+    if (uri.pathSegments.length == 2) {
+      if (uri.pathSegments[0] != 'book') return BookRoutePath.unknown();
+      var remaining = uri.pathSegments[1];
+      var id = int.tryParse(remaining);
+      if (id == null) return BookRoutePath.unknown();
+      return BookRoutePath.details(id);
+    }
+
+    // handle unknown routes
+    return BookRoutePath.unknown();
+  }
+
+  @override
+  RouteInformation restoreRouteInformation(BookRoutePath path) {
+    // TODO: Replace with switch
+    if (path.isUnknown) {
+      return RouteInformation(location: '/404');
+    }
+
+    if (path.isHomePage) {
+      return RouteInformation(location: '/');
+    }
+
+    if (path.isDetailsPage) {
+      return RouteInformation(location: '/books/${path.id}');
+    }
+
+    return null;
+  }
+}
+
+class BookRouterDelegate extends RouterDelegate<BookRoutePath>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<BookRoutePath> {
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  Book _selectedBook;
+  bool show404 = false;
+
+  List<Book> books = [
+    Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
+    Book('Foundation', 'Isaac Asimov'),
+    Book('Fahrenheit 451', 'Ray Bradbury'),
+  ];
+
+  // call default constructor and initalize navigatorKey as an instance of GlobalKey
+  BookRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>();
+
+  BookRoutePath get currentConfiguration {
+    if (show404) {
+      return BookRoutePath.unknown();
+    }
+    return _selectedBook == null
+        ? BookRoutePath.home()
+        : BookRoutePath.details(books.indexOf(_selectedBook));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Navigator(
+      key: navigatorKey,
+      pages: [
+        MaterialPage(
+          key: ValueKey('HomePage'),
+          child: 
+           Layout(
+            views: [
+              Login(title: 'test',),
+              // Text('Match: Hack sample BodyText1',
+              //     style: Theme.of(context).textTheme.bodyText1),
+              Text('Profile: Lato sample headline6',
+                  style: Theme.of(context).textTheme.headline6),
+              Text('Quiz: headline 1',
+                  style: Theme.of(context).textTheme.headline1),
+              Text('Settings: subtitle 2',
+                  style: Theme.of(context).textTheme.subtitle2),
+              Text('Messages', style: Theme.of(context).textTheme.headline6),
+            ],
+          ),
+          // child: BooksListScreen(
+          //   books: books,
+          //   onTapped: _handleBookTapped,
+          // ),
+        ),
+        if (show404)
+          MaterialPage(
+            key: ValueKey('UnknownPage'),
+            child: UnknownScreen(),
+          )
+        else if (_selectedBook != null)
+          BookDetailsPage(book: _selectedBook)
+      ],
+      onPopPage: (route, result) {
+        if (!route.didPop(result)) {
+          return false;
+        }
+
+        // update the list of pages by setting _selectedBook to null
+        _selectedBook = null;
+        show404 = false;
+        notifyListeners();
+        return true;
+      },
+    );
+  }
+
+  @override
+  Future<void> setNewRoutePath(BookRoutePath path) async {
+    if (path.isUnknown) {
+      _selectedBook = null;
+      show404 = true;
+      return;
+    }
+
+    if (path.isDetailsPage) {
+      if (path.id < 0 || path.id > books.length - 1) {
+        show404 = true;
+        return;
+      }
+
+      _selectedBook = books[path.id];
+    } else {
+      _selectedBook = null;
+    }
+    show404 = false;
+  }
+
+  void _handleBookTapped(Book book) {
+    _selectedBook = book;
+    notifyListeners();
+  }
+}
+
+class BookDetailsPage extends Page {
+  final Book book;
+
+  BookDetailsPage({
+    this.book,
+  }) : super(key: ValueKey(book));
+
+  Route createRoute(BuildContext context) {
+    return MaterialPageRoute(
+      settings: this,
+      builder: (BuildContext context) {
+        return BookDetailsScreen(book: book);
+      },
+    );
+  }
+}
+
+class BookRoutePath {
+  final int id;
+  final bool isUnknown;
+
+  BookRoutePath.home()
+      : id = null,
+        isUnknown = false;
+
+  BookRoutePath.details(this.id) : isUnknown = false;
+
+  BookRoutePath.unknown()
+      : id = null,
+        isUnknown = true;
+
+  bool get isHomePage => id == null;
+  bool get isDetailsPage => id != null;
+}
+
+class BooksListScreen extends StatelessWidget {
+  final List<Book> books;
+  final ValueChanged<Book> onTapped;
+
+  BooksListScreen({
+    @required this.books,
+    @required this.onTapped,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: ListView(
+        children: [
+          for (var book in books)
+            ListTile(
+              title: Text(book.title),
+              subtitle: Text(book.author),
+              onTap: () => onTapped(book),
+            )
+        ],
+      ),
+    );
+  }
+}
+
+class BookDetailsScreen extends StatelessWidget {
+  final Book book;
+
+  BookDetailsScreen({
+    @required this.book,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (book != null) ...[
+              Text(
+                book.title,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text(
+                book.author,
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UnknownScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: Text('404!'),
+      ),
+    );
+  }
+}
+
+// void main() {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   // AppSettings settings = AppSettings();
+//   SystemChrome.setPreferredOrientations(
+//           [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+//       .then((_) => runApp(FDate(
+//           // settings: settings
+//           )));
+// }
+#+end_src
