@@ -1,4 +1,5 @@
-import 'package:f_date/widgets/quiestionaire.dart';
+import 'package:f_date/widgets/question_list.dart';
+// import 'package:f_date/widgets/quiestionaire.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -66,7 +67,10 @@ class _HomeState extends State<Home> {
             body: TabBarView(
               children: [
                 // Tab(icon: Icon(Icons.bar_chart)),
-                Tab(child: Questionaire(),),
+                Tab(child:
+                  // Questionaire(),
+                  QuestionList(),
+                ),
                 Tab(icon: Icon(Icons.leaderboard_sharp)),
                 Tab(icon: Icon(Icons.build)),
                 Tab(icon: Icon(Icons.favorite_sharp)),

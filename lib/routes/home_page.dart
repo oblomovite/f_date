@@ -69,6 +69,7 @@ class _HomePageState extends State<HomePage>
           LoginPage(),
           // WelcomePage(),
           Home()
+
         ],
       );
     });

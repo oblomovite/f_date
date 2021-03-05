@@ -1,32 +1,18 @@
-import 'package:f_date/api/json_models/questions.dart';
 import 'package:json_annotation/json_annotation.dart';
-
 part 'questionaire.g.dart';
 
-
 /*
-Model for question list to be retrieved from Firebase
+Questionaire Model to be inflated from Firestore database
 */
-
-// necessary since we rely on another class to represent the JSON here
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(
+  // explicitToJson: true
+)
 class Questionaire {
-  @JsonKey(required: true)
-  final int id;
+  List<QuestionaireElement> questionaires;
 
-
-  // Just in case the values are not initialized correctly
-  @JsonKey(defaultValue: "")
-  final String title;
-  // Just in case the values are not initialized correctly
-  @JsonKey(defaultValue: [])
-  final List<Questions> questions;
-
-  const Questionaire(
-    this.id,
-    this.title,
-    this.questions,
-  );
+  Questionaire({
+    this.questionaires,
+  });
 
   factory Questionaire.fromJson(Map<String, dynamic> json) =>
       _$QuestionaireFromJson(json);
@@ -34,3 +20,36 @@ class Questionaire {
   Map<String, dynamic> toJson() => _$QuestionaireToJson(this);
 }
 
+@JsonSerializable()
+class QuestionaireElement {
+
+  String title;
+  List<Question> questions;
+
+  QuestionaireElement({
+    this.title,
+    this.questions,
+  });
+
+  factory QuestionaireElement.fromJson(Map<String, dynamic> json) =>
+      _$QuestionaireElementFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestionaireElementToJson(this);
+}
+
+@JsonSerializable()
+class Question {
+
+  String prompt;
+  List<String> responses;
+
+  Question({
+    this.prompt,
+    this.responses,
+  });
+
+  factory Question.fromJson(Map<String, dynamic> json) =>
+      _$QuestionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestionToJson(this);
+}

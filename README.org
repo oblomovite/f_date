@@ -1,6 +1,7 @@
-* f_date
+* f_date (aka Chimera)
 * TODO Application
-
+** TODO Databases
+*** TODO Figure out the meaningful distinctions between Firebase realtime-database and cloud-firestore
 ** TODO iOS Support
 Follow the guide here:
 https://flutter.dev/docs/deployment/ios
@@ -45,6 +46,17 @@ I have a json representing the Myers-Briggs test in Firebase. I have to pull thi
 *** TODO Think about your data needs and try to model some documents
 
 ** TODO CI/CD pipeline and production environment/deployment
+** TODO Add Logging
+[[https://flutter.dev/docs/testing/code-debugging#logging]]
+
+* Gradle 
+** TODO gradle.properties configuration - figure out what available options there are and what they mean!
+#+begin_src 
+org.gradle.jvmargs=-Xmx1536M
+android.enableR8=true
+android.useAndroidX=true
+android.enableJetifier=true
+#+end_src
 * TODO Business
 ** TODO Figure out how to categorize personality traits and which ones to use
 eg. a person could either be outgoing or introverted and that would represented as:
@@ -69,14 +81,15 @@ Resources:
 - Look at books on symbology, specifically Literary Symbology
 
 Considerations:
-- do date
 - RE Date
 - Sum Date 
   - sounds nice
   - logo easy to pick
 - dodo date -> not sure
-- chimera (chimerism) -> from the species of angler fish that reproduces by genetic chimerism
-
+- chimera (chimerism)
+  - from the species of angler fish that reproduces by genetic chimerism
+  - Sam approves
+- dated
 * Tools
 ** Firebase CLI
 There's a lot you can do from the CLI - read about it:
@@ -88,12 +101,11 @@ firebase database:push /questionaire ./assets/quiz/mb-personality.json
 #+end_src
 
 
-
 ** Flutter Utilities
 ** Generating sources
 This project uses json-serializer to generate the necessary sources run this as needed:
 #+begin_src sh
-flutter packages pub run build_runner build
+flutter packages pub run build_runner build --delete-conflicting-outputs
 #+end_src
 
 To watch for file changes run: 
@@ -115,6 +127,12 @@ flutter packages pub upgrade
 #+begin_src sh
 flutter pub run build_runner build
 #+end_src
+
+Run an emulator from shell
+#+begin_src sh
+flutter emulators # get device id
+flutter emulators --launch <device-id>
+#+end_src
 ** Gradle
 In case you're working with the android code directly - or the gradle build files remember to change into the ./android/ directory to make use of ./android/gradlew for build commands
 Keep these commands in mind:
@@ -127,6 +145,8 @@ and
 cd ./android/
 ./gradlew clean
 #+end_src
+
+
 ** SHA1/SHA256 Keys
 To obtain these keys for your application run the following:
 #+begin_src sh
@@ -241,8 +261,199 @@ The =updateShouldNotify= method checks whether the value has changed, and the fr
 
 
 * Reference Snippets
+** Firebase realtime-database example
+#+begin_src dart :exports none
+// Copyright 2019 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import 'dart:async';
+import 'dart:io' show Platform;
+
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final FirebaseApp app = await Firebase.initializeApp(
+    name: 'db2',
+    options: Platform.isIOS || Platform.isMacOS
+        ? FirebaseOptions(
+            appId: '1:297855924061:ios:c6de2b69b03a5be8',
+            apiKey: 'AIzaSyD_shO5mfO9lhy2TVWhfo1VUmARKlG4suk',
+            projectId: 'flutter-firebase-plugins',
+            messagingSenderId: '297855924061',
+            databaseURL: 'https://flutterfire-cd2f7.firebaseio.com',
+          )
+        : FirebaseOptions(
+            appId: '1:297855924061:android:669871c998cc21bd',
+            apiKey: 'AIzaSyD_shO5mfO9lhy2TVWhfo1VUmARKlG4suk',
+            messagingSenderId: '297855924061',
+            projectId: 'flutter-firebase-plugins',
+            databaseURL: 'https://flutterfire-cd2f7.firebaseio.com',
+          ),
+  );
+  runApp(MaterialApp(
+    title: 'Flutter Database Example',
+    home: MyHomePage(app: app),
+  ));
+}
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({this.app});
+  final FirebaseApp app;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter;
+  DatabaseReference _counterRef;
+  DatabaseReference _messagesRef;
+  StreamSubscription<Event> _counterSubscription;
+  StreamSubscription<Event> _messagesSubscription;
+  bool _anchorToBottom = false;
+
+  String _kTestKey = 'Hello';
+  String _kTestValue = 'world!';
+  DatabaseError _error;
+
+  @override
+  void initState() {
+    super.initState();
+    // Demonstrates configuring to the database using a file
+    _counterRef = FirebaseDatabase.instance.reference().child('counter');
+    // Demonstrates configuring the database directly
+    final FirebaseDatabase database = FirebaseDatabase(app: widget.app);
+    _messagesRef = database.reference().child('messages');
+    database.reference().child('counter').once().then((DataSnapshot snapshot) {
+      print('Connected to second database and read ${snapshot.value}');
+    });
+    database.setPersistenceEnabled(true);
+    database.setPersistenceCacheSizeBytes(10000000);
+    _counterRef.keepSynced(true);
+    _counterSubscription = _counterRef.onValue.listen((Event event) {
+      setState(() {
+        _error = null;
+        _counter = event.snapshot.value ?? 0;
+      });
+    }, onError: (Object o) {
+      final DatabaseError error = o;
+      setState(() {
+        _error = error;
+      });
+    });
+    _messagesSubscription =
+        _messagesRef.limitToLast(10).onChildAdded.listen((Event event) {
+      print('Child added: ${event.snapshot.value}');
+    }, onError: (Object o) {
+      final DatabaseError error = o;
+      print('Error: ${error.code} ${error.message}');
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _messagesSubscription.cancel();
+    _counterSubscription.cancel();
+  }
+
+  Future<void> _increment() async {
+    // Increment counter in transaction.
+    final TransactionResult transactionResult =
+        await _counterRef.runTransaction((MutableData mutableData) async {
+      mutableData.value = (mutableData.value ?? 0) + 1;
+      return mutableData;
+    });
+
+    if (transactionResult.committed) {
+      _messagesRef.push().set(<String, String>{
+        _kTestKey: '$_kTestValue ${transactionResult.dataSnapshot.value}'
+      });
+    } else {
+      print('Transaction not committed.');
+      if (transactionResult.error != null) {
+        print(transactionResult.error.message);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Flutter Database Example'),
+      ),
+      body: Column(
+        children: <Widget>[
+          Flexible(
+            child: Center(
+              child: _error == null
+                  ? Text(
+                      'Button tapped $_counter time${_counter == 1 ? '' : 's'}.\n\n'
+                      'This includes all devices, ever.',
+                    )
+                  : Text(
+                      'Error retrieving button tap count:\n${_error.message}',
+                    ),
+            ),
+          ),
+          ListTile(
+            leading: Checkbox(
+              onChanged: (bool value) {
+                setState(() {
+                  _anchorToBottom = value;
+                });
+              },
+              value: _anchorToBottom,
+            ),
+            title: const Text('Anchor to bottom'),
+          ),
+          Flexible(
+            child: FirebaseAnimatedList(
+              key: ValueKey<bool>(_anchorToBottom),
+              query: _messagesRef,
+              reverse: _anchorToBottom,
+              sort: _anchorToBottom
+                  ? (DataSnapshot a, DataSnapshot b) => b.key.compareTo(a.key)
+                  : null,
+              itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                  Animation<double> animation, int index) {
+                return SizeTransition(
+                  sizeFactor: animation,
+                  child: ListTile(
+                    trailing: IconButton(
+                      onPressed: () =>
+                          _messagesRef.child(snapshot.key).remove(),
+                      icon: Icon(Icons.delete),
+                    ),
+                    title: Text(
+                      "$index: ${snapshot.value.toString()}",
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _increment,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+#+end_src
+** Flutter complete reference
+[[https://fluttercompletereference.com/resources?code=cloudfirestore]]
 ** Flutter 2.0 Navigation
-#+begin_src dart
+#+begin_src dart :exports none
 
 
 Future<void> main() async {
@@ -585,4 +796,177 @@ class UnknownScreen extends StatelessWidget {
 //           // settings: settings
 //           )));
 // }
+#+end_src
+
+*** Example Controller
+#+begin_src dart
+
+import 'package:flutter/material.dart';
+// import 'package:shared/shared.dart';
+
+class TodoPage extends StatefulWidget {
+  final TodoController controller;
+
+  const TodoPage({Key key, this.controller}) : super(key: key);
+
+  @override
+  _TodoPageState createState() => _TodoPageState();
+}
+
+class _TodoPageState extends State<TodoPage> {
+  List<Todo> todos;
+  bool isLoading = false;
+
+  void _getTodos() async {
+    var newTodos = await widget.controller.fetchTodos();
+    setState(() {
+      todos = newTodos;
+    });
+  }
+
+  void updateTodo(Todo todoItem, bool isCompleted) async {
+    await widget.controller.updateTodo(todoItem, isCompleted);
+    setState(() {});
+  }
+
+  void initState() {
+    super.initState();
+    widget.controller.onSync.listen((bool syncState) => setState(() {
+          isLoading = syncState;
+        }));
+  }
+
+  Widget get body => isLoading
+      ? CircularProgressIndicator()
+      : ListView.builder(
+          key: Key('list-view'),
+          itemCount: todos != null ? todos.length : 1,
+          itemBuilder: (ctx, idx) {
+            if (todos != null) {
+              return CheckboxListTile(
+                key: ValueKey("todo-$idx"),
+                onChanged: (bool val) => updateTodo(todos[idx], val),
+                value: todos[idx].completed,
+                title: Text(todos[idx].title),
+                subtitle: Text(
+                  "todo num: $idx",
+                  key: ValueKey("todo-$idx-subtitle"),
+                ),
+              );
+            } else {
+              return Text("Tap button to fetch todos");
+            }
+          });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('HTTP Todos'),
+        actions: <Widget>[
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Text(
+                widget.controller.getCompletedTodos().toString(),
+                key: ValueKey("counter"),
+                style: Theme.of(context).textTheme.display2,
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: Center(child: body),
+      floatingActionButton: FloatingActionButton(
+        key: Key("get-todos-button"),
+        onPressed: () => _getTodos(),
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
+#+end_src
+
+*** Example Validation Class for a given Widget
+#+begin_src dart
+import 'dart:async';
+
+class Validators {
+  final validateEmail =
+      StreamTransformer<String, String>.fromHandlers(handleData: (email, sink) {
+    if (email.contains('@') && email.contains('.')) {
+      sink.add(email);
+    } else if (email.length > 0) {
+      sink.addError('Enter a valid email');
+    }
+  });
+
+  final validatePassword = StreamTransformer<String, String>.fromHandlers(
+      handleData: (password, sink) {
+    if (password.length >= 6) {
+      sink.add(password);
+    } else if (password.length > 0) {
+      sink.addError('Password needs to be at least 6 characters');
+    }
+  });
+
+}
+#+end_src
+
+*** Example HTTP processing with JSON
+A services implementation for working with todo objects:
+#+begin_src dart
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart';
+import 'package:shared/shared.dart';
+
+class HttpServices implements Services {
+  Client client = Client();
+
+  Future<List<Todo>> getTodos() async {
+    final response =
+    await client.get('https://jsonplaceholder.typicode.com/todos?userId=1');
+
+    if (response.statusCode == 200) {
+      var all = AllTodos.fromJson(json.decode(response.body));
+      return all.todos;
+    } else {
+      throw Exception('Failed to load todos ');
+    }
+  }
+
+  @override
+  Future addTodo() {
+    // TODO: implement addTodo
+    return null;
+  }
+
+  @override
+  Future<Todo> updateTodo(Todo todo) async {
+    // post todo
+    return todo;
+  }
+}
+
+class FirebaseServices implements Services {
+  @override
+  Future addTodo() {
+    return null;
+  }
+
+  @override
+  Future<List<Todo>> getTodos() async {
+    QuerySnapshot snapshot =
+    await Firestore.instance.collection("todos").getDocuments();
+    AllTodos todos = AllTodos.fromSnapshot(snapshot);
+    return todos.todos;
+  }
+
+  @override
+  Future<Todo> updateTodo(Todo todo) {
+    // TODO: implement updateTodo
+    return null;
+  }
+}
 #+end_src

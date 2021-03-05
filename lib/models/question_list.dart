@@ -1,3 +1,0 @@
-/*
-Model representing a list of questions
-*/

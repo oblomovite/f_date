@@ -1,22 +1,42 @@
-/*
-This widget contains the UI for a given questionaire -- 
 
-Once a questionaire from the QuestionaireList has been selected this 
-widget will appear
-
-*/
+import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 import 'package:path/path.dart';
 
-class Questionaire extends StatelessWidget {
-  static Stream<QuerySnapshot> getStream() => FirebaseFirestore.instance
-      .collection("questionaires")
-      .where("id", isEqualTo: 1)
+import 'dart:developer' as developer;
 
+class Questionaire extends StatelessWidget {
+  /* Conenct to firebase_database instance */
+  // final dbRef = FirebaseDatabase.instance.reference();
+  //
+  // void readData() {
+  //   dbRef.once().then((DataSnapshot snapshot) {
+  //     print('Data: ${snapshot.value}');
+  //   });
+  // }
+
+  static Future<DataSnapshot> getQuestionaires() async =>
+      await FirebaseDatabase.instance
+          .reference()
+          .once()
+          .then((DataSnapshot snapshot) {
+        return snapshot;
+      }).catchError((e) {
+        debugPrint(e);
+      });
+
+  /* Stream collection from cloud_firestore */
+  static Stream<QuerySnapshot> getStream() => FirebaseFirestore.instance
+
+      /// Note this instance knows how to find Firebase because of the
+      /// google-services.json/plist in the android/iOS directories
+      .collection("questionaire")
+      // .where("id", isEqualTo: 1)
       /// returns a stream listening to the given collection
       /// new values are emitted whenever somethings changes
       .snapshots();
@@ -25,34 +45,76 @@ class Questionaire extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<DataSnapshot>(
+      future:
+          FirebaseDatabase.instance.reference().child('questionaire').once(),
+      builder: (BuildContext context, AsyncSnapshot questions) {
+        List<Widget> children;
+        if (questions.hasData) {
+          final data = questions.data.value;
+          // print('questions.data.value: ${questions.data.value.data}');
+          print('questions.data.value: $data');
 
-    print('Questionaire Loaded');
-    print('loaded: $getStream');
-    return StreamBuilder<QuerySnapshot>(
-        stream: getStream(),
-        builder: (context, questionaires) {
-          if (questionaires.hasError) {
-            return /*const*/ ErrorWidget(questionaires.error);
-          }
+          /*TODO figure out how to decode json string into object*/
+          // final List<> question_data = jsonDecode(data.toString());
 
-          if (questionaires.hasData) {
-            final data = questionaires.data;
-            if (data != null) {
-              return ListView.builder(
-                itemExtent: 80.0,
-                itemCount: data.docs.length,
-                itemBuilder: (context, index) =>
-                    // QuestionaireItem(data.docs./*[index]*/),
-                    QuestionaireItem(data.docs.first),
-              );
-            } else {
-              return /*const*/ ErrorWidget(questionaires.data);
-            }
-          }
-          return /*const*/ Center(
-            child: CircularProgressIndicator(),
-          );
-        });
+          // print(question_data);
+          children = <Widget>[
+            Text(data.toString()),
+            // Text(data['questions'])
+
+            // Text(data)
+            // Text(data["questions"]),
+            // Text(data["questions"][1])
+          ];
+        } else {
+          children = <Widget>[Text("no data found")];
+        }
+        return ListView(
+          children: children,
+        );
+      },
+    );
+
+    /* Stream Query from cloud_firestore*/
+    // return StreamBuilder<QuerySnapshot>(
+    //     stream: getStream(),
+    //     builder: (context, questionaires) {
+    //       /* demo - check data */
+    //       readData();
+    //
+    //       if (questionaires.hasError) {
+    //         return /*const*/ ErrorWidget(questionaires.error);
+    //       }
+    //       if (questionaires.hasData) {
+    //         final data = questionaires.data;
+    //         final test = data.docs;
+    //         if (data != null) {
+    //           print('Questionaire Loaded');
+    //           print('loaded: $getStream');
+    //           // developer.log('Questionaire data, $questionaires.data', name: 'my.app.category');
+    //
+    //           print('shape of questions: $test');
+    //           return ListView.builder(
+    //             itemExtent: 80.0,
+    //             itemCount: data.docs.length,
+    //             itemBuilder: (context, index) {
+    //               print('data.docs[index] is: $data.docs[index]');
+    //               return QuestionaireItem(data.docs[index]);
+    //             }, //=>
+    //             // QuestionaireItem(data.docs./*[index]*/),
+    //             // QuestionaireItem(data.docs[index]),
+    //           );
+    //         } else {
+    //           print('Questionaire not loaded - investigate!');
+    //           // developer.log('Questionaire data unavailable', name: 'my.app.category');
+    //           return /*const*/ ErrorWidget(questionaires.data);
+    //         }
+    //       }
+    //       return /*const*/ Center(
+    //         child: CircularProgressIndicator(),
+    //       );
+    //     });
   }
 }
 
@@ -100,6 +162,7 @@ class QuestionaireItem extends StatelessWidget {
   /// This constitutes a question from the questionaire
   Widget build(BuildContext context) {
     // return ListTile(
+    print('shape of questions: $questions');
     return Column(children: [
       // for (var i in questions) Text("questions[i]: $questions[i]")
       for (var i in questions) Text(i.toString())

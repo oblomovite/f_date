@@ -7,22 +7,45 @@ part of 'questionaire.dart';
 // **************************************************************************
 
 Questionaire _$QuestionaireFromJson(Map<String, dynamic> json) {
-  $checkKeys(json, requiredKeys: const ['id']);
   return Questionaire(
-    json['id'] as int,
-    json['title'] as String ?? '',
-    (json['questions'] as List)
-            ?.map((e) => e == null
-                ? null
-                : Questions.fromJson(e as Map<String, dynamic>))
-            ?.toList() ??
-        [],
+    questionaires: (json['questionaires'] as List)
+        ?.map((e) => e == null
+            ? null
+            : QuestionaireElement.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   );
 }
 
 Map<String, dynamic> _$QuestionaireToJson(Questionaire instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'questionaires': instance.questionaires,
+    };
+
+QuestionaireElement _$QuestionaireElementFromJson(Map<String, dynamic> json) {
+  return QuestionaireElement(
+    title: json['title'] as String,
+    questions: (json['questions'] as List)
+        ?.map((e) =>
+            e == null ? null : Question.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$QuestionaireElementToJson(
+        QuestionaireElement instance) =>
+    <String, dynamic>{
       'title': instance.title,
-      'questions': instance.questions?.map((e) => e?.toJson())?.toList(),
+      'questions': instance.questions,
+    };
+
+Question _$QuestionFromJson(Map<String, dynamic> json) {
+  return Question(
+    prompt: json['prompt'] as String,
+    responses: (json['responses'] as List)?.map((e) => e as String)?.toList(),
+  );
+}
+
+Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
+      'prompt': instance.prompt,
+      'responses': instance.responses,
     };

@@ -13,20 +13,21 @@ dependencies:
   # icons
   cupertino_icons: ^1.0.0
 
-  # analayzer
-  pedantic: ^1.9.2
 
-  # db
+  # db + Firebase
   firebase_core: ^0.7.0
   firebase_auth: ^0.20.0+1
   firebase_dynamic_links: ^0.7.0+1
+  ## Mongo-like database
   cloud_firestore: ^0.16.0+1
+  ## Redis-like key-store
+  firebase_database: ^6.0.0
+
+  ## probably won't need this
   firebase_storage: ^7.0.0
+
   # de/serialization
-  json_serializable: ^3.0.0
-  json_annotation: ^3.0.0
-  built_value: ^7.1.0
-  built_value_generator: ^7.1.0
+  json_annotation: ^3.1.1
 
   # utils + statemanagement
   equatable: ^1.2.6
@@ -43,8 +44,16 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+    # runs builds, scripts, etc. 
   build_runner: ^1.0.0
+
+  # JSON
+  json_serializable: ^3.5.1
+
+  # analayzer + linter
   pedantic: ^1.9.2
+
   flutter_driver:
     sdk: flutter
 
