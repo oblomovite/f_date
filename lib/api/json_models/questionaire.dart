@@ -5,9 +5,10 @@ part 'questionaire.g.dart';
 Questionaire Model to be inflated from Firestore database
 */
 @JsonSerializable(
-  // explicitToJson: true
+  explicitToJson: true
 )
 class Questionaire {
+  @JsonKey(name: 'questionaires')
   List<QuestionaireElement> questionaires;
 
   Questionaire({
@@ -20,10 +21,15 @@ class Questionaire {
   Map<String, dynamic> toJson() => _$QuestionaireToJson(this);
 }
 
-@JsonSerializable()
+
+@JsonSerializable(
+  explicitToJson: true
+)
 class QuestionaireElement {
 
+  @JsonKey(name: 'title')
   String title;
+  @JsonKey(name: 'questions')
   List<Question> questions;
 
   QuestionaireElement({
@@ -44,7 +50,9 @@ class QuestionaireElement {
 @JsonSerializable()
 class Question {
 
+  @JsonKey(name: 'prompt')
   String prompt;
+  @JsonKey(name: 'responses')
   List<String> responses;
 
   Question({
