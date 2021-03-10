@@ -970,3 +970,30 @@ class FirebaseServices implements Services {
   }
 }
 #+end_src
+
+*** Decoding Nested Json
+https://github.com/TomerPacific/MediumArticles/tree/master/serialization_example
+#+begin_src dart
+import 'package:serialization_example/models/doughnut.dart';
+
+class DoughnutList {
+  final List<Doughnut> doughnuts;
+
+  DoughnutList(this.doughnuts);
+
+  DoughnutList.fromJson(Map<String, dynamic> json)
+  : doughnuts = json['doughnuts'] != null ? List<Doughnut>.from(json['doughnuts']) : null;
+
+  Map<String, dynamic> toJson()  =>
+  {
+    'doughnuts': doughnuts,
+  };
+
+}
+
+// ... elsewhere
+Map<String, dynamic> decodedDoughnuts = jsonDecode(encodedJson);
+List<dynamic> decodedJson =  decodedDoughnuts['doughnuts'];
+decodedJson.map((elem) => jsonDecode(elem));
+
+#+end_src

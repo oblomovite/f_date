@@ -1,4 +1,6 @@
-import 'package:f_date/api/json_models/questionaire.dart';
+import 'package:f_date/api/json_models/questionaire.dart' as Questionaire;
+import 'package:f_date/api/json_parsers/json_parser.dart';
+// import 'package:f_date/widgets/quiestionaire.dart';
 // import 'package:f_date/api/json_parsers/json_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -13,30 +15,102 @@ widget will appear
 */
 
 class QuestionList extends StatelessWidget {
+  // Future<List<QuestionaireElement>> _getQuestionaires() async { /// 1
+  //   /// 1
+  //   final db = await FirebaseDatabase.instance
+  //       .reference()
+  //       .child('questionaires')
+  //       .once();
+  //   return db.value;
+  // }
+
   @override
   Widget build(BuildContext context) {
+    // return FutureBuilder<List<QuestionaireElement>>( /// 1
+
     return FutureBuilder<DataSnapshot>(
       future:
-          // FirebaseDatabase.instance.reference().child('questionaire').once(),
-          FirebaseDatabase.instance.reference().child('questionaires').once(),
+          // _getQuestionaires(), /// 1
+          FirebaseDatabase.instance
+              .reference()
+              .child('questionaires')
+
+              /// get the first questionaire
+              .child('0')
+              .once(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         List<Widget> children;
-        if (snapshot.hasData && snapshot.data.value != null) {
+
+        final data = snapshot.data.value;
+        if (snapshot.hasData && data != null) {
+          // print("snapshot.data.value: ${data}");
+
+          final result = data;
+          print("result: ${result}");
+          print("result type: ${result.runtimeType}");
+
+          var questions = Questionaire.QuestionaireElement.fromJson(data);
+          print(questions);
+          // print("result length: ${result.length}");
+          // print("result :: first item title :: ${result[0]["title"]}");
+          // print("result :: first item questions :: ${result[0]["questions"]}");
+
+          // final myersBriggs = Questionaire.QuestionaireElement(
+          //     title: result[0]["title"], questions: result[0]["questions"]);
+
+          // var x = snapshot.data.value[0]["questions"];
+          // .forEach((value, index) {
+          // print(value);
+          // print("value: $value");
+          // print("key: ${result[index][index]}");
+          // });
+
+          /// List of Questions
+          // print("x is $x");
+          //
+          // /// Individial Question and Responses Object
+          // print("x[0]: ${x[0]}");
+          //
+          // print("x[0][prompt]: ${x[0]["prompt"]}");
+          // print("x[0][responses]: ${x[0]["responses"]}");
+          //
+          // print("keys from x[0]: ${x[0].keys}");
+          // print("values from x[0]: ${x[0].values}");
+
+          // print("myers-briggs type: ${myersBriggs.runtimeType}");
+          // print("myers-briggs: ${myersBriggs}");
+
+          // result.forEach((value) {
+          //   print("value: $value");
+          // });
+
+          /// Okay so I have to convert it myself from a List<dynamic>
+          // List<Questionaire.QuestionaireElement> questions =
+          //     result.map((value) {
+          //   Questionaire.QuestionaireElement.fromJson(value);
+          // });
+
+          /// Check result
+          // print("CONVERSION ATTEMPT: $questions");
+          // print("CONVERSION ATTEMPT CHECK TYPE: ${questions.runtimeType}");
+
           // final result = questions.data.value;
           // questions.data.value.forEach(
           // (index, data) {
 
-          // print(snapshot.data.value["questions"]);
-          // List<dynamic> questions = snapshot.data.value;
+          // final result = QuestionaireParser()
+          // .parseFromJson(snapshot.data.value
+          //   //
+          //   .toString()
+          // );
+          //
+          // print("questionaire: $result");
 
-          // final questionaire = questionaireFromJson(jsonString);
-          // final Questionaire questionaire =
-          // Questionaire.fromJson(snapshot.data.value[0]);
-
-          final questionaire =
-              Questionaire.fromJson(snapshot.data.value);
-
-          print("questionaire: $questionaire");
+// .then(function(snapshot) {
+//     snapshot.forEach(function(childSnapshot) {
+//       var key = childSnapshot.key; // you will get your key here
+//   });
+// });
 
           children = <Widget>[
             Text('example text'),

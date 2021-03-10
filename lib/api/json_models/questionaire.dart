@@ -31,10 +31,14 @@ class QuestionaireElement {
     this.questions,
   });
 
-  factory QuestionaireElement.fromJson(Map<String, dynamic> json) =>
+  // factory QuestionaireElement.fromJson(Map<String, dynamic> json) =>
+
+  factory QuestionaireElement.fromJson(Map<dynamic, dynamic> json) =>
       _$QuestionaireElementFromJson(json);
 
-  Map<String, dynamic> toJson() => _$QuestionaireElementToJson(this);
+  // Map<String, dynamic> toJson() => _$QuestionaireElementToJson(this);
+
+  Map<dynamic, dynamic> toJson() => _$QuestionaireElementToJson(this);
 }
 
 @JsonSerializable()
@@ -48,8 +52,10 @@ class Question {
     this.responses,
   });
 
-  factory Question.fromJson(Map<String, dynamic> json) =>
+  // factory Question.fromJson(Map<String, dynamic> json) =>
+  factory Question.fromJson(Map<dynamic, dynamic> json) =>
       _$QuestionFromJson(json);
 
-  Map<String, dynamic> toJson() => _$QuestionToJson(this);
+  // Map<String, dynamic> toJson() => _$QuestionToJson(this);
+  Map<dynamic, dynamic> toJson() => _$QuestionToJson(this);
 }
