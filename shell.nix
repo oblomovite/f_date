@@ -9,6 +9,7 @@ in pkgs.mkShell {
     # nodePackages.firebase-tools
     sqlite
     flutter
+    #flutterPackages.beta
     dart
     # dart_dev
     rubyPackages.cocoapods
