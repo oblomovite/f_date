@@ -34,11 +34,7 @@ class QuestionList extends StatelessWidget {
     return FutureBuilder<DataSnapshot>(
       future:
           // _getQuestionaires(), /// 1
-          FirebaseDatabase.instance
-              .reference()
-              .child('questionaires')
-              .child('0')
-              .once(),
+          FirebaseDatabase.instance.reference().child('myers-briggs').once(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         List<Widget> children;
 
@@ -49,112 +45,12 @@ class QuestionList extends StatelessWidget {
           final result = data; //[0];
           print("result: ${result}");
           print("result type: ${result.runtimeType}");
-
-
-
-
-
-
-
-
-
-
-
-
-
-          // var questions = Questionaire.QuestionaireElement.fromJson(data);
-          // final questionaire = Questionaire.questionaireFromJson(json.decode(result));
-
-          // final questionaire =
-          // final questionaire = Map<String, dynamic>.from(result);
-          // result;
-          // Map<String, dynamic>.from(yourData) questionaire = result;
-          // final questionaire = new Map<String, dynamic>.from(result);
-
-          final questionaire = Questionaire.Questionaire.fromJson(
-            Map<dynamic, dynamic>.from(
-              result //as Map<dynamic, dynamic>
-            )
-
-              // as Map<String, dynamic>
-              );
-
-          // List<Questionaire.QuestionaireElement> test = questionaire.questionaires;
-          // print("test: $test");
-          // print("questionaire: check length: ${questionaire["title"]}");
-          // final questionaire = Questionaire.Questionaire.fromJson(result);
-
-          print("questionaire runtime type: ${questionaire.runtimeType}");
-          print("questionaire: ${questionaire}");
-
-          // print("questionaire runtype: ${questionaire.runtimeType}");
-          // print("questionaire: $questionaire");
-
-          // print("result length: ${result.length}");
-          // print("result :: first item title :: ${result[0]["title"]}");
-          // print("result :: first item questions :: ${result[0]["questions"]}");
-
-          // final myersBriggs = Questionaire.QuestionaireElement(
-          //     title: result[0]["title"], questions: result[0]["questions"]);
-
-          // var x = snapshot.data.value[0]["questions"];
-          // .forEach((value, index) {
-          // print(value);
-          // print("value: $value");
-          // print("key: ${result[index][index]}");
-          // });
-
-          /// List of Questions
-          // print("x is $x");
-          //
-          // /// Individial Question and Responses Object
-          // print("x[0]: ${x[0]}");
-          //
-          // print("x[0][prompt]: ${x[0]["prompt"]}");
-          // print("x[0][responses]: ${x[0]["responses"]}");
-          //
-          // print("keys from x[0]: ${x[0].keys}");
-          // print("values from x[0]: ${x[0].values}");
-
-          // print("myers-briggs type: ${myersBriggs.runtimeType}");
-          // print("myers-briggs: ${myersBriggs}");
-
-          // result.forEach((value) {
-          //   print("value: $value");
-          // });
-
-          /// Okay so I have to convert it myself from a List<dynamic>
-          // List<Questionaire.QuestionaireElement> questions =
-          //     result.map((value) {
-          //   Questionaire.QuestionaireElement.fromJson(value);
-          // });
-
-          /// Check result
-          // print("CONVERSION ATTEMPT: $questions");
-          // print("CONVERSION ATTEMPT CHECK TYPE: ${questions.runtimeType}");
-
-          // final result = questions.data.value;
-          // questions.data.value.forEach(
-          // (index, data) {
-
-          // final result = QuestionaireParser()
-          // .parseFromJson(snapshot.data.value
-          //   //
-          //   .toString()
-          // );
-          //
-          // print("questionaire: $result");
-
-// .then(function(snapshot) {
-//     snapshot.forEach(function(childSnapshot) {
-//       var key = childSnapshot.key; // you will get your key here
-//   });
-// });
+          print("result check :: first prompt :: ${result[0]["prompt"]}");
+          print("result check :: first response set :: ${result[0]["responses"]}");
 
           children = <Widget>[
             // for (i in )
             Text('example text'),
-
           ];
         } else {
           children = <Widget>[Text("no data found")];
