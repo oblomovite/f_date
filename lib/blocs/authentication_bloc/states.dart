@@ -27,3 +27,8 @@ class AuthenticationRevoked extends AuthenticationState {
 class AuthenticationLoading extends AuthenticationState {
   const AuthenticationLoading();
 }
+
+/// Todo: handle timeouts, or do something with a failed login attempt
+class AuthenticationError extends AuthenticationState {
+  const AuthenticationError();
+}
