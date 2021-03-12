@@ -6,12 +6,14 @@ part of 'questionaire.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Questionaire _$QuestionaireFromJson(Map<String, dynamic> json) {
+Questionaire _$QuestionaireFromJson(Map json) {
   return Questionaire(
     questionaires: (json['questionaires'] as List)
         ?.map((e) => e == null
             ? null
-            : QuestionaireElement.fromJson(e as Map<String, dynamic>))
+            : QuestionaireElement.fromJson((e as Map)?.map(
+                (k, e) => MapEntry(k as String, e),
+              )))
         ?.toList(),
   );
 }
@@ -21,31 +23,30 @@ Map<String, dynamic> _$QuestionaireToJson(Questionaire instance) =>
       'questionaires': instance.questionaires,
     };
 
-QuestionaireElement _$QuestionaireElementFromJson(Map<String, dynamic> json) {
+QuestionaireElement _$QuestionaireElementFromJson(Map json) {
   return QuestionaireElement(
-    title: json['title'] as String,
-    questions: (json['questions'] as List)
-        ?.map((e) =>
-            e == null ? null : Question.fromJson(e as Map<String, dynamic>))
+    content: (json['content'] as List)
+        ?.map((e) => e == null ? null : Content.fromJson(e as Map))
         ?.toList(),
+    title: json['title'] as String,
   );
 }
 
 Map<String, dynamic> _$QuestionaireElementToJson(
         QuestionaireElement instance) =>
     <String, dynamic>{
+      'content': instance.content,
       'title': instance.title,
-      'questions': instance.questions,
     };
 
-Question _$QuestionFromJson(Map<String, dynamic> json) {
-  return Question(
-    prompt: json['prompt'] as String,
+Content _$ContentFromJson(Map json) {
+  return Content(
     responses: (json['responses'] as List)?.map((e) => e as String)?.toList(),
+    prompt: json['prompt'] as String,
   );
 }
 
-Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
-      'prompt': instance.prompt,
+Map<String, dynamic> _$ContentToJson(Content instance) => <String, dynamic>{
       'responses': instance.responses,
+      'prompt': instance.prompt,
     };

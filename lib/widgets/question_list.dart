@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:f_date/api/json_models/questionaire.dart' as Questionaire;
+import 'package:f_date/api/json_models/questionaire.dart';
 import 'package:f_date/api/json_parsers/json_parser.dart';
 // import 'package:f_date/widgets/quiestionaire.dart';
 // import 'package:f_date/api/json_parsers/json_parser.dart';
@@ -34,8 +37,6 @@ class QuestionList extends StatelessWidget {
           FirebaseDatabase.instance
               .reference()
               .child('questionaires')
-
-              /// get the first questionaire
               .child('0')
               .once(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -45,12 +46,50 @@ class QuestionList extends StatelessWidget {
         if (snapshot.hasData && data != null) {
           // print("snapshot.data.value: ${data}");
 
-          final result = data;
+          final result = data; //[0];
           print("result: ${result}");
           print("result type: ${result.runtimeType}");
 
-          var questions = Questionaire.QuestionaireElement.fromJson(data);
-          print(questions);
+
+
+
+
+
+
+
+
+
+
+
+
+          // var questions = Questionaire.QuestionaireElement.fromJson(data);
+          // final questionaire = Questionaire.questionaireFromJson(json.decode(result));
+
+          // final questionaire =
+          // final questionaire = Map<String, dynamic>.from(result);
+          // result;
+          // Map<String, dynamic>.from(yourData) questionaire = result;
+          // final questionaire = new Map<String, dynamic>.from(result);
+
+          final questionaire = Questionaire.Questionaire.fromJson(
+            Map<dynamic, dynamic>.from(
+              result //as Map<dynamic, dynamic>
+            )
+
+              // as Map<String, dynamic>
+              );
+
+          // List<Questionaire.QuestionaireElement> test = questionaire.questionaires;
+          // print("test: $test");
+          // print("questionaire: check length: ${questionaire["title"]}");
+          // final questionaire = Questionaire.Questionaire.fromJson(result);
+
+          print("questionaire runtime type: ${questionaire.runtimeType}");
+          print("questionaire: ${questionaire}");
+
+          // print("questionaire runtype: ${questionaire.runtimeType}");
+          // print("questionaire: $questionaire");
+
           // print("result length: ${result.length}");
           // print("result :: first item title :: ${result[0]["title"]}");
           // print("result :: first item questions :: ${result[0]["questions"]}");
@@ -113,7 +152,9 @@ class QuestionList extends StatelessWidget {
 // });
 
           children = <Widget>[
+            // for (i in )
             Text('example text'),
+
           ];
         } else {
           children = <Widget>[Text("no data found")];
