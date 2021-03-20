@@ -1,4 +1,4 @@
-* f_date (aka Chimera)
+* f_date (aka Chimera/RE:DATE)
 * TODO Application
 ** TODO Databases
 *** TODO Figure out the meaningful distinctions between Firebase realtime-database and cloud-firestore
@@ -995,5 +995,44 @@ class DoughnutList {
 Map<String, dynamic> decodedDoughnuts = jsonDecode(encodedJson);
 List<dynamic> decodedJson =  decodedDoughnuts['doughnuts'];
 decodedJson.map((elem) => jsonDecode(elem));
+
+#+end_src
+
+*** Assembling media data from byte array
+#+begin_src dart
+// In dart Uint8List is equal to byte[].
+// Create one function and pass file path, It will return Bytes.
+
+Future<Uint8List> _readFileByte(String filePath) async {
+    Uri myUri = Uri.parse(filePath);
+    File audioFile = new File.fromUri(myUri);
+    Uint8List bytes;
+    await audioFile.readAsBytes().then((value) {
+    bytes = Uint8List.fromList(value); 
+    print('reading of bytes is completed');
+  }).catchError((onError) {
+      print('Exception Error while reading audio from path:' +
+      onError.toString());
+  });
+  return bytes;
+}
+// Now call the function in to get bytes of file.
+
+try{
+  Uint8List audioByte;
+  String myPath= 'MyPath/abc.png';
+  _readFileByte(myPath).then((bytesData) {
+    audioByte = bytesData;
+  //do your task here 
+  });
+} catch (e) {
+   // if path invalid or not able to read
+  print(e);
+}
+// If you want base64String then use below code:
+// String audioString = base64.encode(audioByte);
+
+// for base64 import 'dart:convert';
+
 
 #+end_src

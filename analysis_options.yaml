@@ -1,8 +1,30 @@
+# include: package:pedantic/analysis_options.1.11.0.yaml
+
 analyzer:
-    strong-mode:
+  strong-mode:
+    # To disallow both implicit downcasts and implicit dynamic types in the analysis options file:
     implicit-casts: false
+    implicit-dynamic: false
+
+  errors:
+    todo: ignore
+    unused_local_variable: info
+    invalid_assignment: error
+    missing_return: error
+    dead_code: info
+    todo: ignore
+
+  exclude:
+    - flutter/**
+    # - lib/api/*.dart
+    - lib/api/json_models/*.g.dart
+    - src/test/_data/**
+
 linter:
-    rules:
+  rules:
+    - avoid_empty_else
+    - cancel_subscriptions
+    - close_sinks
     - annotate_overrides
     - avoid_empty_else
     - avoid_function_literals_in_foreach_calls
@@ -13,6 +35,7 @@ linter:
     - avoid_types_as_parameter_names
     - avoid_unused_constructor_parameters
     - await_only_futures
+    - always_declare_return_types
     - camel_case_types
     - cancel_subscriptions
     - cascade_invocations

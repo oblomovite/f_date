@@ -25,5 +25,7 @@ in pkgs.mkShell {
     export ANDROID_HOME=~/Android/Sdk
     export FLUTTER_SDK=${pkgs.flutter.unwrapped}
     export DART=${pkgs.dart}
+    export PATH=$PATH:$ANDROID_HOME/tools/bin
+    export PATH=$PATH:$ANDROID_HOME/platform-tools
   '';
 }

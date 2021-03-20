@@ -52,7 +52,7 @@ dev_dependencies:
   json_serializable: ^3.5.1
 
   # analayzer + linter
-  pedantic: ^1.9.2
+  # pedantic: ^1.11.0
 
   flutter_driver:
     sdk: flutter

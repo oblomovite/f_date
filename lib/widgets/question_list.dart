@@ -13,7 +13,8 @@ widget will appear
 class QuestionPrompt extends StatelessWidget {
   final String prompt;
   final List<dynamic> responses;
-  const QuestionPrompt({this.prompt, this.responses});
+  final Function onSelect;
+  const QuestionPrompt({this.prompt, this.responses, this.onSelect});
 
   // QuestionPrompt.fromMap(Map<String, dynamic> data) {
   //   this.responses = data['responses'];
@@ -24,50 +25,100 @@ class QuestionPrompt extends StatelessWidget {
     /* Make this fade-in? */
     return Container(
       child: Column(children: <Widget>[
-        Row(children: [
-          Text(
+        SizedBox(
+          child: Text(
             prompt,
             textAlign: TextAlign.center,
           ),
-        ]),
-        for (var i in responses) Text(
-                i.toString(),
-                textAlign: TextAlign.center,
-        )
+          height: 100.0,
+          width: 100.0,
+        ),
+        for (var i in responses)
+          Row(
+            children: [
+              OutlinedButton(
+                child: Text(
+                  i.toString(),
+                  textAlign: TextAlign.center,
+                ),
+                onPressed: onSelect,
+              ),
+            ],
+          ),
       ]),
     );
   }
 }
 
-class QuestionList extends StatelessWidget {
+class QuestionList extends StatefulWidget {
+  const QuestionList({Key /*?*/ key}) : super(key: key);
+
+  @override
+  _QuestionListState createState() => _QuestionListState();
+}
+
+class _QuestionListState extends State<QuestionList> {
+  int _questionIndex;
+  String selectedQuiz;
+
+  // _QuestionListState({this.selectedQuiz});
+
+  @override
+  void initState() {
+    print('initialized QuestionList Component');
+    // _getThingsOnStartup().then((value){
+    //   print('Async done');
+    // });
+    super.initState();
+  }
+
+  void _toggleNext() {
+    setState(() {
+      _questionIndex += 1;
+    });
+  }
+
+  void _togglePrevious() {
+    setState(() {
+      _questionIndex -= 1;
+    });
+  }
+
+  // Future _getThingsOnStartup() async {
+  //   await Future.delayed(Duration(seconds: 2));
+  // }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DataSnapshot>(
-      future:
-          FirebaseDatabase.instance.reference().child('myers-briggs').once(),
+      future: FirebaseDatabase.instance
+          .reference()
+
+          /// Todo repalce this with selectedQuiz
+          .child('myers-briggs')
+          // .child(selectedQuiz)
+          .once(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         List<Widget> children;
-
-        final data = snapshot.data.value;
-        if (snapshot.hasData && data != null) {
-          final result = data; //[0];
-          print("result: ${result}");
-          print("result type: ${result.runtimeType}");
-          print(
-              "result check :: first prompt :: ${result[0]["prompt"].runtimeType}");
-          print(
-              "result check :: first response set :: ${result[0]["responses"].runtimeType}");
-
-          // List<String> example_responses = result[0]["responses"];
+        if (snapshot.hasData) {
+          final result = snapshot.data.value;
           children = <Widget>[
-            Text('example text'),
-            // QuestionPrompt()
-            QuestionPrompt(
-              prompt: result[0]["prompt"],
-              responses: result[0]["responses"] //.cast<List<String>>()
-              ,
+            IndexedStack(
+              index: _questionIndex,
+              children: <Widget>[
+                for (int i = 0; i < result.length; i++)
+                  Column(
+                    children: <Widget>[
+                      QuestionPrompt(
+                        prompt: result[i]["prompt"],
+                        responses: result[i]["responses"],
+                        onSelect: _toggleNext,
+                      ),
+                      // Row
+                    ],
+                  )
+              ],
             )
-            // getQuestions(result),
           ];
         } else {
           children = <Widget>[Text("no data found")];

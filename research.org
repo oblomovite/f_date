@@ -1,2 +1,32 @@
 * Questions 
 you sit at an empty table surrounded by chairs. Your chair to too far away from the table do you pull the table or move your chair?
+
+* Notes from Platko
+- TAT utility spurrious
+- Projective vs Obejctive assessment
+  - Investigate Objective assesment tests
+- Projective assessments must be blank - no structure
+- TAT has to be free input consider using NLP sentiment/emotional analysis if such a thing exists
+  - 
+
+- TAT
+Balak scoring system
+Each card is pulls for a different trait
+
+fill in the blank psychological questionaires
+
+- MMPI Validaty scales can directly determine personality traits
+  - look up PAI - fewer items than MMPI
+  - Time intervals matter -- some information 
+
+    have a group of questions that do repeat themselves and one set that doesnt
+    and then assess the change over the course of time. 
+
+    wedding dress white with gold stripes, black with grey stripes
+    - consider using visual test like choose this or at.
+
+- revisit Roarshach
+- House Tree Person Test
+
+- Psychological meanings of symbols
+

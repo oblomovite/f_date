@@ -1,6 +1,4 @@
-// import 'package:f_date/services/authentication.dart';
 import 'package:flutter/material.dart';
-
 import 'routes/home_page.dart';
 
 /// Routing handler for the app

@@ -1,12 +1,9 @@
 import 'package:f_date/blocs/authentication_bloc.dart';
 import 'package:f_date/pages/home.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:f_date/pages/login_page.dart';
-import 'package:f_date/pages/welcome_page.dart';
 
 /// Home widget containing a tab that programmatically
 /// swipes between login form and the welcome page
@@ -20,7 +17,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-
   TabController tabController;
 
   @override
@@ -52,15 +48,22 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
-      // This state is emitted on successful authentication
-      if (state is AuthenticationSuccess) {
-        loginTransition();
-      }
 
-      // This state is emitted on logout
-      if (state is AuthenticationRevoked) {
-        logoutTransition();
-      }
+    /*
+    Handles Authentication States -- uncomment when not developing
+    // This state is emitted on successful authentication
+    // if (state is AuthenticationSuccess) {
+    //   loginTransition();
+    // }
+
+    // This state is emitted on logout
+    // if (state is AuthenticationRevoked) {
+    //   logoutTransition();
+    // }
+    */
+
+      /// Just log-in for development 
+      loginTransition();
 
       return TabBarView(
         physics: const NeverScrollableScrollPhysics(),
@@ -69,7 +72,6 @@ class _HomePageState extends State<HomePage>
           LoginPage(),
           // WelcomePage(),
           Home()
-
         ],
       );
     });
