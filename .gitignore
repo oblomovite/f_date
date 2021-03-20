@@ -42,6 +42,7 @@ app.*.map.json
 
 # Direnv caches
 .direnv/cache-*
+.direnv/drv
 
 # Emacs backup files
 [#]*[#]

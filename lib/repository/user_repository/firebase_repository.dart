@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:f_date/repository/user_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -37,4 +40,18 @@ class FirebaseUserRepository extends UserRepository {
 
   @override
   String get signedEmail => FirebaseAuth.instance.currentUser.email ?? "-";
+
+  // @override
+  String get uid => FirebaseAuth.instance.currentUser.uid ?? "-";
+
+  // @override
+  Future<void> addUser() async {
+    try {
+      await FirebaseFirestore.instance.collection('users').add({
+          'email': FirebaseAuth.instance.currentUser.email
+      });
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
 }
