@@ -1,9 +1,11 @@
-import 'package:f_date/blocs/authentication_bloc.dart';
-import 'package:f_date/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:f_date/pages/home.dart';
 import 'package:f_date/pages/login_page.dart';
+
+import 'package:f_date/blocs/authentication_bloc.dart';
 
 /// Home widget containing a tab that programmatically
 /// swipes between login form and the welcome page

@@ -6,6 +6,7 @@ the authentication state available
 
 */
 
+import 'package:camera/camera.dart';
 import 'package:f_date/repository/user_repository/firebase_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:f_date/repository/user_repository/test_repository.dart';
@@ -17,8 +18,13 @@ import 'blocs/authentication_bloc.dart';
 // Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+Future<void> main() async {
+// This call makes sure the camera plugin has been
+// properly initialized and it's ready to be used.
   WidgetsFlutterBinding.ensureInitialized();
+
+  final cameras = await availableCameras();
+  final firstCamera = cameras.first;
 
   runApp(Provider<FirebaseUserRepository>(
     create: (_) => const FirebaseUserRepository(),
@@ -50,6 +56,8 @@ class App extends StatelessWidget {
           // return LoginApp();
           return BlocProvider<AuthenticationBloc>(
             create: (context) => AuthenticationBloc(repository),
+
+            /// Optimization tells Bloc not to re-render the following stateless widget
             child: MaterialApp(
               initialRoute: RouteGenerator.homePage,
               onGenerateRoute: RouteGenerator.generateRoute,

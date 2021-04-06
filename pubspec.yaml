@@ -5,6 +5,7 @@ version: 1.0.0+1
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
+  # sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -38,8 +39,17 @@ dependencies:
   # http
   dio: ^3.0.10
 
-  # not sure
+  # Pathing for various host platforms
   path: ^1.7.0
+
+  # Access camera
+  camera: ^0.6.0
+
+  # Easily find folder paths
+  path_provider: ^1.0.1
+
+  # Get images from a device
+  image_picker: ^0.6.0
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +60,9 @@ dev_dependencies:
 
   # JSON
   json_serializable: ^3.5.1
+
+  # Check connection type (WiFi, mobile, etc)
+  connectivity: ^3.0.3
 
   # analayzer + linter
   # pedantic: ^1.11.0
