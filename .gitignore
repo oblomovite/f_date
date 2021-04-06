@@ -40,9 +40,11 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Direnv caches
-.direnv/cache-*
-.direnv/drv
+# Direnv 
+.direnv/
 
 # Emacs backup files
 [#]*[#]
+
+# package lock
+pubspec.lock
