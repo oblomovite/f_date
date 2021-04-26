@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:f_date/repository/user_repository/test_repository.dart';
 import 'package:f_date/routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'blocs/authentication_bloc.dart';
 
@@ -23,6 +24,8 @@ Future<void> main() async {
 // properly initialized and it's ready to be used.
   WidgetsFlutterBinding.ensureInitialized();
 
+  // await Hive.initFlutter();
+  // Move to camera widget
   final cameras = await availableCameras();
   final firstCamera = cameras.first;
 

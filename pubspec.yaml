@@ -4,74 +4,76 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
   # sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  # icons
-  cupertino_icons: ^1.0.0
-
-
   # db + Firebase
-  firebase_core: ^0.7.0
-  firebase_auth: ^0.20.0+1
-  firebase_dynamic_links: ^0.7.0+1
+  firebase_core: ^1.0.3
+  firebase_auth: ^1.0.3
+  firebase_dynamic_links: ^0.8.0
   ## Mongo-like database
-  cloud_firestore: ^0.16.0+1
+  cloud_firestore: ^1.0.4
   ## Redis-like key-store
-  firebase_database: ^6.0.0
+  firebase_database: ^6.1.2
 
   ## probably won't need this
-  firebase_storage: ^7.0.0
+  firebase_storage: ^8.0.3
 
   # de/serialization
-  json_annotation: ^3.1.1
+  json_annotation: ^4.0.1
 
   # utils + statemanagement
   equatable: ^1.2.6
-  flutter_bloc: ^6.1.2
-  provider: ^4.3.2+2
-  bloc_test: ^7.0.4
+  flutter_bloc: ^7.0.0
+  provider: ^5.0.0
+  bloc_test: ^8.0.0
 
   # http
-  dio: ^3.0.10
+  dio: ^4.0.0
 
   # Pathing for various host platforms
-  path: ^1.7.0
+  path: ^1.8.0
 
   # Access camera
-  camera: ^0.6.0
+  camera: ^0.8.1
 
   # Easily find folder paths
-  path_provider: ^1.0.1
+  path_provider: ^2.0.1
 
   # Get images from a device
-  image_picker: ^0.6.0
+  image_picker: ^0.7.4
+
+  # GraphQL
+  # graphql_flutter: ^5.0.0-nullsafety.4
+  
+  # Hive Store
+  hive: ^2.0.2
+  hive_flutter: ^1.0.0
+
+  pedantic: ^1.11.0
+
+  cupertino_icons: ^1.0.2 # Only required if you use Cupertino (iOS style) icons
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-    # runs builds, scripts, etc. 
-  build_runner: ^1.0.0
-
+  # runs builds, scripts, etc. 
+  hive_generator: ^1.0.1
+  build_runner: ^1.12.2
   # JSON
-  json_serializable: ^3.5.1
-
+  json_serializable: ^4.1.0
+  
   # Check connection type (WiFi, mobile, etc)
   connectivity: ^3.0.3
 
-  # analayzer + linter
-  # pedantic: ^1.11.0
-
-  flutter_driver:
-    sdk: flutter
-
 flutter:
-  uses-material-design: true
+  uses-material-design: true # Required if you use the Material icon font
+
   fonts:
     - family: Hack
       fonts:

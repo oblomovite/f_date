@@ -1,0 +1,19 @@
+* Features
+** Profile
+*** TODO Create profile view screen
+*** TODO Create profile edit screen
+**** TODO Create Camera functionality
+**** TODO Create Sections for profile and lifestyle
+The user should be allowed to take pictures of themselves and their stuff but
+these two should be organized seperately
+** Quiz
+*** TODO Create a view for quiz taking
+*** TODO Create a view for quiz selection
+** Graphs
+*** TODO Create a view that allows users to view composite scores and assessments made by the quizes
+* CI/CD
+*** TODO Research setting up a jenkins pipeline
+* Tooling
+** Database
+*** TODO Research graphql
+*** TODO Research neo4j or some other graph db
