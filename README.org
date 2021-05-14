@@ -193,7 +193,7 @@ Classes that act as messengers between the HTTP services and the widgets.
 They're responsible for telling the UI what the models are and what to render given a response.
 *** models/
 Objects to be inflated by database documents
-*** components/ + classes/ + widgets/
+*** components/ + classes/ + widgets/ [remove+edit]
 Custom widgets which are used in multiple screens (HOCs)
 These provide organization, validation, and generally any other logic 
 that doesn't concern state management or network requests
@@ -205,7 +205,17 @@ Concern business objects and streams of data typically from http
 **** BLoC Providers
 Concern connecting the State of BLoCs accross pages and widgets
 
-*** screens/ + views/ + pages/ + routes/
+
+*** routes/
+Contains the UI widgets representing a route (aka page, screen, view) of the
+app. Routes are separated by directory containing page-specific elements.
+
+
+*** widgets/
+Resuable widgets that support the creation of application routes, eg. HOCs,
+layouts, wrappers, etc.
+
+*** screens/ + views/ + pages/ + routes/ [remove+edit]
 Primary screen file for a given view and a folder for it's associated components (./components)
 **** match/
 Logic concerning existing matches, eg. chatting and profile viewing
@@ -224,6 +234,7 @@ Logic concerning the display of various statistical elements regarding the user 
 
 **** questionaires/
 Logic concerning the display of various personality quizes used in establishing/quantifying traits on a particular user profile. This metric is used in organizing and prioritizing potential matches, as well as providing the prompt mechanic (during conversation initiation) to provide tangentially meaningful, but common-point introductions between users of the same or similar group type.
+
 
 * Business
 ** Goals

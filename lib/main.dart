@@ -19,6 +19,16 @@ import 'blocs/authentication_bloc.dart';
 // Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
 
+List<CameraDescription> cameras = [];
+
+void logError(String code, String? message) {
+  if (message != null) {
+    print('Error: $code\nError Message: $message');
+  } else {
+    print('Error: $code');
+  }
+}
+
 Future<void> main() async {
 // This call makes sure the camera plugin has been
 // properly initialized and it's ready to be used.
@@ -26,8 +36,15 @@ Future<void> main() async {
 
   // await Hive.initFlutter();
   // Move to camera widget
-  final cameras = await availableCameras();
-  final firstCamera = cameras.first;
+  // final cameras = await availableCameras();
+  // final firstCamera = cameras.first;
+
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    cameras = await availableCameras();
+  } on CameraException catch (e) {
+    logError(e.code, e.description);
+  }
 
   runApp(Provider<FirebaseUserRepository>(
     create: (_) => const FirebaseUserRepository(),
@@ -47,6 +64,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     final repository = context.select((FirebaseUserRepository r) => r);
     return FutureBuilder(
+
       // Initialize FlutterFire:
       future: _initialization,
       builder: (context, snapshot) {
@@ -56,13 +74,17 @@ class App extends StatelessWidget {
         }
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
+
           // return LoginApp();
+          /// TOOD: // return MultiProvider(providers: [],)
           return BlocProvider<AuthenticationBloc>(
             create: (context) => AuthenticationBloc(repository),
 
             /// Optimization tells Bloc not to re-render the following stateless widget
             child: MaterialApp(
+              /// Load initial page
               initialRoute: RouteGenerator.homePage,
+              /// 
               onGenerateRoute: RouteGenerator.generateRoute,
               // localizationsDelegates: [
               //   const AppLocalizationDelegate(),

@@ -6,6 +6,9 @@
 **** TODO Create Sections for profile and lifestyle
 The user should be allowed to take pictures of themselves and their stuff but
 these two should be organized seperately
+** Map Integration
+*** TODO Allow users to schedule a date using google maps
+Look at the google maps library for flutter
 ** Quiz
 *** TODO Create a view for quiz taking
 *** TODO Create a view for quiz selection

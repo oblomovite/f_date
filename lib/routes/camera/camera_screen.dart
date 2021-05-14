@@ -4,22 +4,37 @@ import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
-class TakePicture extends StatefulWidget {
-  final CameraDescription camera;
-
-  TakePicture({@required this.camera});
+class CameraScreen extends StatefulWidget {
+  /*
+   * ::TODO:: 
+   * figure out where/when to actually intialize camera
+   * and whether this constructor should depend it 
+   */
+  late final CameraDescription camera;
+  // CameraScreen(
+    // {required this.camera}
+  // );
 
   @override
-  _TakePictureState createState() => _TakePictureState();
+  _CameraScreenState createState() => _CameraScreenState();
 }
 
-class _TakePictureState extends State<TakePicture> {
-  /*late final */ CameraController _controller;
-  /*late final */ Future<void> _initController;
+class _CameraScreenState extends State<CameraScreen>
+    with
+/* Binds the widget tree to the Flutter engine -- whatever that means */
+        WidgetsBindingObserver,
+        TickerProviderStateMixin {
+  late final CameraController _controller;
+  late final Future<void> _initController;
+  XFile? imageFile;
+  XFile? videoFile;
+
+  // VideoPlayerController? videoPlayerController;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
 
     _controller = CameraController(
       widget.camera,
@@ -31,6 +46,7 @@ class _TakePictureState extends State<TakePicture> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
     _controller.dispose();
     super.dispose();
   }
@@ -51,11 +67,24 @@ class _TakePictureState extends State<TakePicture> {
     // TODO :: update package to be able to pass path to takePicture method
     await _controller.takePicture();
 
-
     Scaffold.of(context).showSnackBar(SnackBar(
       content: const Text("Picture Taken"),
       duration: const Duration(milliseconds: 600),
     ));
+  }
+
+  /// Returns a suitable camera icon for [direction].
+  IconData getCameraLensIcon(CameraLensDirection direction) {
+    switch (direction) {
+      case CameraLensDirection.back:
+        return Icons.camera_rear;
+      case CameraLensDirection.front:
+        return Icons.camera_front;
+      case CameraLensDirection.external:
+        return Icons.camera;
+      default:
+        throw ArgumentError('Unknown lens direction');
+    }
   }
 
   @override
@@ -76,7 +105,6 @@ class _TakePictureState extends State<TakePicture> {
                 ),
               );
             }
-
             return const Center(
               child: CircularProgressIndicator(),
             );

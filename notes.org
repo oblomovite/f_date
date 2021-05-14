@@ -1,0 +1,11 @@
+
+* Flutter
+** Binding
+See this article for an explanation of /binding/ in flutter
+[[https://medium.com/surfstudio/flutter-under-the-hood-binding-2b0ea65e5314]]
+
+/Binding/ is the glue between the engine level and the framework level of
+Flutter. Each of them is responsible for a specific line of work.
+
+** WidgetsFlutterBinding
+
