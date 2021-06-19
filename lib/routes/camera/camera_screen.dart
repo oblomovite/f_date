@@ -21,7 +21,7 @@ class CameraScreen extends StatefulWidget {
 
 class _CameraScreenState extends State<CameraScreen>
     with
-/* Binds the widget tree to the Flutter engine -- whatever that means */
+    /// registers state with the Widgets layer binding
         WidgetsBindingObserver,
         TickerProviderStateMixin {
   late final CameraController _controller;
@@ -34,6 +34,11 @@ class _CameraScreenState extends State<CameraScreen>
   @override
   void initState() {
     super.initState();
+    /// register the object as a binding observer.
+    /// essentially convert system state (and events therein)
+    /// into inherited widgets
+    /// eg. screen size is passed to MediaQuery widget each time it is built, which enables other widgets to use the MediaQuery.of static method and the inheritedWidget mechanism to be notified whenever the screen size changes (eg. whenever the screen rotates)
+
     WidgetsBinding.instance?.addObserver(this);
 
     _controller = CameraController(

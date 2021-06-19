@@ -6,6 +6,423 @@ See this article for an explanation of /binding/ in flutter
 
 /Binding/ is the glue between the engine level and the framework level of
 Flutter. Each of them is responsible for a specific line of work.
-
 ** WidgetsFlutterBinding
+* Classes
+** Late 
+If variables are not intialized immediately and you want them to be
+non-nullable, you can use the =late= modifier. It works like a "lazy
+initialization" because with this keyword you allow a non-nullable to be
+intialized later (but anyway befor it gets accesssed for the first time ever)
 
+Note that =late final= variables will behave the same way with the exception that
+they can only be assigned once.
+** Named Constructors
+Named constructors are generally used to implement a default behavior the user
+expects from a class. They are the only alternative to have multiple
+constructors since Dart has no method overload.
+#+begin_src dart :session default
+class Fraction {
+int _numerator;
+int _denominator;
+
+Fraction(this._numerator, this._denominator);
+
+// denominator cannot be 0
+Fraction.zero();
+_numerator = 0;
+_denominator = 1;
+
+// use named constructor like a static method call:
+void main() {
+// "traditional" initialization
+final fraction1 = Fraction(0,1);
+// same thing but with named constructor
+final fraction2 = Fraction.zero();
+}
+}
+#+end_src
+
+** Redirecting constructors
+Sometimes you might have a constructor that does almost the same thing already
+implemented by another one. It may be the case to use redirecting constructors
+in order to avoid code duplication:
+#+begin_src dart :session default
+Fraction(this._numerator, this._denominator);
+// represents '1/2'
+Fractiion.oneHalf() : this(1,2);
+// represents integers, like '3' which is '3/1'
+Fraction.whole(int val) : this (val, 1);
+#+end_src
+
+** Factory Constructors
+The =factory= keyword returns an instance of the given class that's not
+nescessarily a new one. It can be useful when:
+ - you want to return an instance of a subclass instead of the class itself
+ - you want to implement a singleton
+ - you want to return an instance from a cache
+   
+Factory constructors are like static methods and so they do have have access to
+=this=. There cannot be together a factory and a "normal" constructor with the
+same name:
+#+begin_src dart :session default
+class Test
+static final _objects = List<BigObject>();
+factory Test(BigObject obj) {
+if (!objects.contains(obj))
+objects.add(obj);
+}
+return Test_default();
+
+// This is a private named constructor and thus it can't be called from the outside
+Test._default() {
+// do something...
+}
+#+end_src
+
+Since =BigObject= requires a lot of memory and list is very long, we have declared
+/objects/ as *static*. This technique is often used to save memory and reuse the
+same object across multiple objects of the same type.
+
+A factory constructor is essential here because it takes care of updating the
+=_objects= cache. Factories are called "normally," as if they were regular constructors:
+#+begin_src dart
+final a = Test();
+#+end_src
+
+** Const vs. Final
+ - use *final* when the value is not known at compile time because it will be
+   evaluated/obtained at runtime. Common usages are I/O from disk or HTTP requestions.
+ - use *const* when the value is computed at compile time, eg. with integers,
+   doubles, Strings or classes with a /constant constructor/
+
+Note that instances variables can only be declared as *final* while *const* can be
+applied in combination with the *static* keyword.
+
+** Const Constructors
+You can apped the *const* keyword in front a constructor only if you are going to
+intialize a series of *final* (immutable) variables.
+#+begin_src dart
+// compiles
+class Compiles {
+  final int a;
+  final int b;
+  const Compiles(this.a, this.b);
+}
+// does not compile bevause a is mutable (not final)
+class DoesNot {
+  int a;
+  final int b;
+  const DOesNot(this.a, this.b);
+}
+#+end_src
+
+Note if you class only has *final* variables it is said to be an "immutable class"
+and you should really instantiate it with a *const* constructor for compiler optimizations.
+
+** Getters and Setters
+Use getters to make variables read-only and avoid runtime complications arising
+from directly mutated variables:
+#+begin_src dart 
+class Fraction {
+
+  int _numerator;
+  int _denominator;
+
+  Fraction (this._numerator, this._denominator);
+
+  // Getters are read-only
+// two ways to do the same thing
+  int get numerator => _numerator;
+  int get denominator {return _denominator;}
+}
+#+end_src
+
+The code is now safe because we can expose both numerator and denominator but
+it's garunteed that they cannot be freely modified. Internally, =_numerator= and
+=_denominator= are "safe" because they are not visible from the outside (as
+private variables marked with "_").
+
+Setter Example:
+#+begin_src dart 
+class Fraction {
+int _numerator;
+int _denominator;
+
+Fraction(this._numerator, this._denominator);
+
+// getters
+int get numerator => _numerator;
+int get denominator => _denominator;
+
+//setters
+set denominator(int value) {
+  if (value ==0) {
+    // or throw an exception..
+    _denominator = 1;
+  } else {
+    _denominator = value;
+  }
+}
+}
+#+end_src
+
+Setters should be used to make "safe edits" on variables; they often contain a
+validation logic which makes sure that the internal state of the class does not
+get corrupted.
+
+** Operators overload
+Operator overloading gives the possibility to customize the usage of operators
+in your classes. We can overload the *+* operator so that we can easily sum two
+fractions isntead of having to create an =add(Fraction value)= method:
+#+begin_src dart
+class Fraction {
+  Fraction operator+(Fraction other) =>
+  Fraction(
+    _numerator * other._denominator +
+    _denominator * other._numerator,
+    _denominator * other._denominator
+  );
+  
+  Fraction operator-(Fraction other) => ...
+  Fraction operator*(Fraction other) => ...
+  ...
+
+}
+#+end_src
+
+Note that you can overload any operators using the form: *operator{sign}* where
+sign can be either arithmetical, relational (<, <=), equality (=),
+etc - in our previous example we could have also extended these operators to
+allow addition between different class types eg. ints.
+
+** Callable Classes
+The =call()= method is closely related to an operator overload - it allows classes
+to be called as if they were functions with the =()= operator.
+
+#+begin_src dart
+class Example {
+double call(double a, double b) => a + b;
+}
+void main() {
+// class instantiation
+final ex = Example();
+// object 'ex' can act like a function due to the call() method defintion
+final value = ex(1.3, -2.2);
+print("$value");
+}
+#+end_src
+Any class that implements =call()= is said to be a *callable class*. Recall that
+everything in dart is an object - including functions - so converion between
+these is simple:
+
+#+begin_src dart
+void test (String something) { print(something); }
+// in my_test.dart
+class _Test {
+const _Test();
+void call(String something) { print(something); }
+}
+const test = _Test()
+// in a seperate file, eg main:
+import 'package:myapp:my_test.dart';
+void main() {
+test("Hello");
+}
+#+end_src
+
+The function is nothing more than a package private class that overrides =call()=
+with a certain signature. With *const* =test= = =_Test()=, we "hide" the class and
+expose a callable object to be used as a function.
+
+** Cloning Objects
+There is a standard pattern to follow when you need to create deep copies of objects:
+
+#+begin_src dart
+class Person {
+final String name;
+final int age;
+cont Person({
+required this.name,
+required this.age,
+});
+
+
+Person copyWith({
+String? name,
+int? age,
+}) => Person(
+name: name ?? this.name,
+age: age ?? this.age
+);
+
+@override
+String toString() => "$name, $age";
+
+}
+
+void main() {
+const me const Person(name: "Rob", age: 25);
+const anotherMe = me; // only holds a reference to variable me
+final anotherMeDeep = me.copyWith(); // deep copy
+final OlderMeDeep = me.copyWith(age:35); // deep copy with different paramter
+}
+#+end_src
+
+Note that neither =anotherMe= nor =anotherMeDeep= carry side-effects since they
+reference distinct objects.
+In this line =name: name ?? this.name,= the =??= operator checks if name is *null*
+then intializes the clone with the value of *this.name* taken from the
+instance. Therefore, we do not have to explicitly pass a value for =name=.
+
+Pay extra attention to generic containers and objects in general though,
+#+begin_src dart 
+class Skills {...}
+class Person{
+final List<Skills> skills;
+}
+const Person ({
+required this.skills
+});
+Person copyWith({
+List<Skills>? skills, 
+// not going to work as intended since List<T> is not a primitive as with the previous case
+}) => Person( skills: skills ?? this.skills)
+
+// so we must map each value (rather than reference) in the list individually:
+}) => Person(skills: skills ?? this.skills.map((p) => p.copyWith()).toList();
+// 
+#+end_src
+
+A shortcut - assuming all values that need to be copied are primitives - works
+this way:
+#+begin_src dart
+class Person {
+final List<int> values;
+const Person({
+required this.values
+});
+Person copyWith({List<int>? values,}) => Person( values: values ?? []..addAll(this.values));
+}
+#+end_src
+Note that the line =[]..addAll= is a shortcut for referencing the =addAll()= method
+from the =List= class.
+
+
+* Inheritance and Exceptions
+** Inheritance
+A basic example of a /superclass/ *A* and /subclass/ *B*
+#+begin_src dart
+class A {}
+class B extends A {}
+#+end_src
+
+Methods can be overriden in subclasses because they are /virutal/ by default -
+meaning that it is possible to redine the bejavior of a method in the subclass.
+
+#+begin_src dart
+class A {
+  double test(double a) => a * 0.5;
+}
+class B extends A {
+  @override
+  double test(double a) => a * 1.5;
+}
+
+void main() {
+A obj1 = A();
+A obj2 = B(); // Upcast
+A obj3 = obj1; //Downcast -- ERROR from Dart 2.9
+
+print("${obj1.test(1)}") // prints 0.5
+print("${obj2.test(1)}")} // prints 1.5
+#+end_src
+
+When overriding, you can reference the original method definition in the superclass:
+#+begin_src dart
+class B extends A {
+double test(double a) {
+final original = super.test(a);
+return original * 1.5;
+}
+}
+#+end_src
+
+The special keyword *super* holds a refernce to the super class. The usage of
+=super.test(a)= calls the test() method defined in the superclass.
+
+Note that you cannot block inheritance like in Java with =final class A {}= to bar
+other classes from subclassing A. 
+
+Like Java, Dart does not support multiple inheritance.
+
+*** Overriding Paramter types
+You can override a parameter's type with a subtype - you must use the =covariant=
+keyword to inform the compiler ahead of time, otherwise it will throw an error.
+#+begin_src dart
+abstract class Fruit {}
+class Apple extends Fruit {}
+class Grape extends Fruit {}
+class Banana extends Fruit {}
+
+abstract class Mamal{
+void eat(Fruit f);
+}
+
+class Human extends Mamal {
+//ok
+void eat(Fruit f) => print("Fruit");
+}
+class Monkey extends Mamal {
+//error
+void eat((Banana f) => print "banana");
+}
+#+end_src
+
+Instead of =eat(Banana f)= we need =eat(Fruit f)=. However we can allow the
+definition of subtype in an overriden method with covariant:
+#+begin_src dart
+class Monkey extends Mamal {
+void eat(covariant Banana f) => print("Banana");
+}
+#+end_src
+
+It's often more convenient to use =covariant= on the superclass since it will
+remove the "subtype containts" along the entire class hierarchy:
+#+begin_src dart
+abstract class Mamal {
+void eat(covariant Fruit f);
+}
+
+class Human extends Mamal {
+//ok
+void eat(Fruit f) => print("Fruit");
+}
+class Monkey extends Mamal {
+//error
+void eat((Banana f) => print "banana");
+}
+
+#+end_src
+
+*** Super and Constructors
+Every subclass in Dart automatically tires to call the default constructor of
+the superclass. If there isn't one, you *must* call the superclass constructor
+manually in the intializer list:
+#+begin_src dart
+class Example {
+int a;
+Example(this.a);
+}
+
+class SubExample extends Example {
+int b;
+// must call 'super(b)' since superclass has no default constructor
+SubExample(this.b) : super(b);
+}
+#+end_src
+
+The superclass constructor must be called in SubExample because the compiler has
+to somehow intialize the variable of an =Example= instance. However, if a default
+constructor is present in the superclass, no explicit reference to super is required.
+
+*** Abstract Classes
