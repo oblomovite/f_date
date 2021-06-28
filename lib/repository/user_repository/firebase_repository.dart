@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 class FirebaseUserRepository extends UserRepository {
   /// Firebase authentication repository
-  const FirebaseUserRepository();
+  FirebaseUserRepository();
 
   @override
   Future<bool> authenticate(String username, String password) async {
@@ -39,16 +39,16 @@ class FirebaseUserRepository extends UserRepository {
   Future<void> logOut() => FirebaseAuth.instance.signOut();
 
   @override
-  String get signedEmail => FirebaseAuth.instance.currentUser.email ?? "-";
+  final String signedEmail = FirebaseAuth.instance.currentUser!.email ?? "-";
 
   // @override
-  String get uid => FirebaseAuth.instance.currentUser.uid ?? "-";
+  String get uid => FirebaseAuth.instance.currentUser!.uid;
 
   // @override
   Future<void> addUser() async {
     try {
       await FirebaseFirestore.instance.collection('users').add({
-          'email': FirebaseAuth.instance.currentUser.email
+          'email': FirebaseAuth.instance.currentUser!.email
       });
     } on Exception catch (e) {
       print(e);

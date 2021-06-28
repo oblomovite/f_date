@@ -18,9 +18,9 @@ class UserProfile {
   final List<Uint8List> profilePictures;
 
   UserProfile({
-    this.id,
-    this.email,
-    this.phoneNumber,
-    this.profilePictures,
+    required this.id,
+    required this.email,
+    required this.phoneNumber,
+    required this.profilePictures,
   });
 }

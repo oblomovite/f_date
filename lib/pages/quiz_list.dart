@@ -8,7 +8,7 @@ class QuizList extends StatefulWidget {
 
 class _QuizListState extends State<QuizList> {
 
-  String _targetImageUrl;
+  late String _targetImageUrl;
 
   @override
   Widget build(BuildContext context) {

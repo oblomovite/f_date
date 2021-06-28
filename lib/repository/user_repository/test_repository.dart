@@ -11,8 +11,8 @@ class TestUserRepository extends UserRepository {
 
   /// Mock authentication repository (for testing)
   const TestUserRepository({
-    @required this.fakeEmail,
-    @required this.success,
+    required this.fakeEmail,
+    required this.success,
   });
 
   @override

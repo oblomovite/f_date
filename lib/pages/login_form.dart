@@ -19,7 +19,7 @@ class _LoginFormState extends State<LoginForm> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  String validateEmail(String input) {
+  String? validateEmail(String input) {
     if ((input.length > 10) && (input.contains("@"))) {
       return null;
     } else {
@@ -28,7 +28,7 @@ class _LoginFormState extends State<LoginForm> {
     }
   }
 
-  String validatePassword(String input) {
+  String? validatePassword(String input) {
     if (input.length > 5) {
       return null;
     } else {
@@ -56,7 +56,6 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, data) {
@@ -82,7 +81,9 @@ class _LoginFormState extends State<LoginForm> {
                   SizedBox(
                     width: baseWidth - 38,
                     child: TextFormField(
-                      validator: validateEmail,
+                      validator: (value) {
+                        validateEmail;
+                      },
                       controller: emailController,
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Icons.email),
@@ -95,7 +96,9 @@ class _LoginFormState extends State<LoginForm> {
                     width: baseWidth - 30,
                     child: TextFormField(
                       obscureText: true,
-                      validator: validatePassword,
+                      validator: (value) {
+                        validatePassword;
+                      },
                       controller: passwordController,
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Icons.vpn_key),
@@ -132,7 +135,7 @@ class _LoginFormState extends State<LoginForm> {
                   color: Colors.lightGreen,
                   textColor: Colors.white,
                   onPressed: () {
-                    if (formKey.currentState.validate()) {
+                    if (formKey.currentState!.validate()) {
                       loginButtonPressed(context);
                     }
                   },
@@ -160,7 +163,7 @@ class _LoginFormState extends State<LoginForm> {
                   // child: Text(context.localize("register")),
                   child: Text("register"),
                   onPressed: () {
-                    if (formKey.currentState.validate()) {
+                    if (formKey.currentState!.validate()) {
                       registerButtonPressed(context);
                     }
                   });
@@ -170,5 +173,4 @@ class _LoginFormState extends State<LoginForm> {
       );
     });
   }
-
 }

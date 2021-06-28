@@ -13,8 +13,8 @@ class CredentialsBloc extends Bloc<CredentialsEvent, CredentialState> {
   final UserRepository userRepository;
   final AuthenticationBloc authenticationBloc;
   CredentialsBloc({
-    @required this.authenticationBloc,
-    @required this.userRepository,
+    required this.authenticationBloc,
+    required this.userRepository,
   }) : super(CredentialsInitial());
 
   @override

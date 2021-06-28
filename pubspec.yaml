@@ -12,13 +12,13 @@ dependencies:
     sdk: flutter
 
   # db + Firebase
-  firebase_core: ^1.0.3
-  firebase_auth: ^1.0.3
-  firebase_dynamic_links: ^0.8.0
+  firebase_core: ^1.3.0
+  firebase_auth: ^1.4.1
+  firebase_dynamic_links: ^2.0.5
   ## Mongo-like database
   cloud_firestore: ^1.0.4
   ## Redis-like key-store
-  firebase_database: ^6.1.2
+  firebase_database: ^7.1.1
 
   ## probably won't need this
   firebase_storage: ^8.0.3
@@ -27,7 +27,7 @@ dependencies:
   json_annotation: ^4.0.1
 
   # utils + statemanagement
-  equatable: ^1.2.6
+  equatable: ^2.0.0
   flutter_bloc: ^7.0.0
   provider: ^5.0.0
   bloc_test: ^8.0.0

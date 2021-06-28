@@ -15,15 +15,15 @@ abstract class CredentialsEvent extends Equatable {
 /// Event fired when the login button is tapped
 class LoginButtonPressed extends CredentialsEvent {
   const LoginButtonPressed({
-    @required String username,
-    @required String password,
+    required String username,
+    required String password,
   }) : super(username, password);
 }
 
 /// Event fired when the register button is tapped
 class RegisterButtonPressed extends CredentialsEvent {
   const RegisterButtonPressed({
-      @required String username,
-      @required String password
+      required String username,
+      required String password
   }) : super(username, password);
 }

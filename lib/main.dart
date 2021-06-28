@@ -32,22 +32,25 @@ void logError(String code, String? message) {
 Future<void> main() async {
 // This call makes sure the camera plugin has been
 // properly initialized and it's ready to be used.
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
 
   // await Hive.initFlutter();
   // Move to camera widget
   // final cameras = await availableCameras();
   // final firstCamera = cameras.first;
 
+  // final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
   try {
     WidgetsFlutterBinding.ensureInitialized();
+    Firebase.initializeApp();
     cameras = await availableCameras();
   } on CameraException catch (e) {
     logError(e.code, e.description);
   }
 
   runApp(Provider<FirebaseUserRepository>(
-    create: (_) => const FirebaseUserRepository(),
+    create: (_) => FirebaseUserRepository(),
     // create: (_) => const TestUserRepository(
     //   fakeEmail: "alberto@miola.it",
     //   success: true,
@@ -64,7 +67,6 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     final repository = context.select((FirebaseUserRepository r) => r);
     return FutureBuilder(
-
       // Initialize FlutterFire:
       future: _initialization,
       builder: (context, snapshot) {
@@ -74,7 +76,6 @@ class App extends StatelessWidget {
         }
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-
           // return LoginApp();
           /// TOOD: // return MultiProvider(providers: [],)
           return BlocProvider<AuthenticationBloc>(
@@ -84,7 +85,8 @@ class App extends StatelessWidget {
             child: MaterialApp(
               /// Load initial page
               initialRoute: RouteGenerator.homePage,
-              /// 
+
+              ///
               onGenerateRoute: RouteGenerator.generateRoute,
               // localizationsDelegates: [
               //   const AppLocalizationDelegate(),

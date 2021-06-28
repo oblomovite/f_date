@@ -10,26 +10,26 @@ The updateShouldNotify method checks whether the value has changed and updates a
 
 */
 
-import 'package:f_date/blocs/home_bloc.dart';
-import 'package:flutter/widgets.dart';
+// import 'package:f_date/blocs/home_bloc.dart';
+// import 'package:flutter/widgets.dart';
 
-class HomeBlocProvider extends InheritedWidget {
-  final HomeBloc homeBloc;
-  final String uid;
+// class HomeBlocProvider extends InheritedWidget {
+//   final HomeBloc homeBloc;
+//   final String uid;
 
-  const HomeBlocProvider({
-    Key key,
-    Widget child,
-    this.homeBloc,
-    this.uid,
-  }) : super(key: key, child: child);
+//   const HomeBlocProvider({
+//     Key key,
+//     Widget child,
+//     this.homeBloc,
+//     this.uid,
+//   }) : super(key: key, child: child);
 
-  static HomeBlocProvider of(BuildContext context) {
-    return (context.dependOnInheritedWidgetOfExactType(aspect: HomeBlocProvider)
-        as HomeBlocProvider);
-  }
+//   static HomeBlocProvider of(BuildContext context) {
+//     return (context.dependOnInheritedWidgetOfExactType(aspect: HomeBlocProvider)
+//         as HomeBlocProvider);
+//   }
 
-  @override
-  bool updateShouldNotify(HomeBlocProvider old) =>
-    homeBloc != old.homeBloc;
-}
+//   @override
+//   bool updateShouldNotify(HomeBlocProvider old) =>
+//     homeBloc != old.homeBloc;
+// }

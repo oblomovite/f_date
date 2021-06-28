@@ -31,7 +31,7 @@ class Questionaire extends StatelessWidget {
       stream: getStream(),
       builder: (context, questionaires) {
         if (questionaires.hasError) {
-          return /*const*/ ErrorWidget(questionaires.error);
+          return /*const*/ ErrorWidget(questionaires.error!);
         }
 
         if (questionaires.hasData) {
@@ -45,7 +45,7 @@ class Questionaire extends StatelessWidget {
               QuestionaireItem(data.docs.first),
             );
           } else {
-            return /*const*/ ErrorWidget(questionaires.data);
+            return /*const*/ ErrorWidget(questionaires.data!);
           }
         }
         return /*const*/ Center(child: CircularProgressIndicator(),);

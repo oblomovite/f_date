@@ -11,9 +11,9 @@ widget will appear
 */
 
 class QuestionPrompt extends StatelessWidget {
-  final String prompt;
-  final List<dynamic> responses;
-  final Function onSelect;
+  final String? prompt;
+  final List<dynamic>? responses;
+  final Function? onSelect;
   const QuestionPrompt({this.prompt, this.responses, this.onSelect});
 
   // QuestionPrompt.fromMap(Map<String, dynamic> data) {
@@ -27,39 +27,42 @@ class QuestionPrompt extends StatelessWidget {
       child: Column(children: <Widget>[
         SizedBox(
           child: Text(
-            prompt,
+            // prompt,
+            "whatever",
+            
             textAlign: TextAlign.center,
           ),
           height: 100.0,
           width: 100.0,
         ),
-        for (var i in responses)
-          Row(
-            children: [
-              OutlinedButton(
-                child: Text(
-                  i.toString(),
-                  textAlign: TextAlign.center,
-                ),
-                onPressed: onSelect,
+        // responses! is a null check
+            for (var i in responses!)
+              Row(
+                children: [
+                  OutlinedButton(
+                    child: Text(
+                      i.toString(),
+                      textAlign: TextAlign.center,
+                    ),
+                    onPressed: () => onSelect,
+                  ),
+                ],
               ),
-            ],
-          ),
       ]),
     );
   }
 }
 
 class QuestionList extends StatefulWidget {
-  const QuestionList({Key /*?*/ key}) : super(key: key);
+  const QuestionList({Key? key}) : super(key: key);
 
   @override
   _QuestionListState createState() => _QuestionListState();
 }
 
 class _QuestionListState extends State<QuestionList> {
-  int _questionIndex;
-  String selectedQuiz;
+  late int _questionIndex;
+  late String selectedQuiz;
 
   // _QuestionListState({this.selectedQuiz});
 

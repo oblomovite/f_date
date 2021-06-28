@@ -13,7 +13,7 @@ class ProfileSetup extends StatelessWidget {
         title: Text('Profile Setup'),
       ),
       body: Center(
-        child: ///Text("${Random().nextInt(20)}"),
+        // child: ///Text("${Random().nextInt(20)}"),
       ),
     );
   }
