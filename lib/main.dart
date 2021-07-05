@@ -43,7 +43,6 @@ Future<void> main() async {
 
   try {
     WidgetsFlutterBinding.ensureInitialized();
-    Firebase.initializeApp();
     cameras = await availableCameras();
   } on CameraException catch (e) {
     logError(e.code, e.description);
@@ -59,9 +58,15 @@ Future<void> main() async {
   ));
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   // Create the initialization Future outside of `build`:
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  @override
+  _AppState createState() => _AppState();
+}
+
+
+class _AppState extends State<App> {
+  Future<FirebaseApp> get _initialization => Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {

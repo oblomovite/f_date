@@ -16,7 +16,7 @@ dependencies:
   firebase_auth: ^1.4.1
   firebase_dynamic_links: ^2.0.5
   ## Mongo-like database
-  cloud_firestore: ^1.0.4
+  cloud_firestore: ^2.2.2
   ## Redis-like key-store
   firebase_database: ^7.1.1
 
@@ -45,7 +45,7 @@ dependencies:
   path_provider: ^2.0.1
 
   # Get images from a device
-  image_picker: ^0.7.4
+  image_picker: ^0.8.1+1
 
   # GraphQL
   # graphql_flutter: ^5.0.0-nullsafety.4
@@ -64,7 +64,7 @@ dev_dependencies:
 
   # runs builds, scripts, etc. 
   hive_generator: ^1.0.1
-  build_runner: ^1.12.2
+  build_runner: ^2.0.5
   # JSON
   json_serializable: ^4.1.0
   
