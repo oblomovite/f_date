@@ -424,3 +424,5 @@ to somehow intialize the variable of an =Example= instance. However, if a defaul
 constructor is present in the superclass, no explicit reference to super is required.
 
 *** Abstract Classes
+* Shell Config
+https://guillaumedesforges.github.io/articles/android-dev-nix

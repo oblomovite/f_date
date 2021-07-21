@@ -13,7 +13,7 @@ dependencies:
 
   # db + Firebase
   firebase_core: ^1.3.0
-  firebase_auth: ^1.4.1
+  firebase_auth: ^3.0.1
   firebase_dynamic_links: ^2.0.5
   ## Mongo-like database
   cloud_firestore: ^2.2.2
@@ -21,7 +21,7 @@ dependencies:
   firebase_database: ^7.1.1
 
   ## probably won't need this
-  firebase_storage: ^8.0.3
+  firebase_storage: ^10.0.1
 
   # de/serialization
   json_annotation: ^4.0.1

@@ -1,0 +1,158 @@
+# with import <nixpkgs> {
+
+#     config.android_sdk.accept_license = true; 
+#     config.allowUnfree = true;
+# };
+
+{ pkgs ? import <nixpkgs> { 
+  config.android_sdk.accept_license = true; 
+  config.allowUnfree = true; 
+} }:
+let
+  pkgs = import <nixpkgs> { 
+    config.android_sdk.accept_license = true; 
+    config.allowUnfree = true; 
+  };
+
+  # pkgs = import <nixpkgs> { 
+  #   config.android_sdk.accept_license = true; 
+  #   config.allowUnfree = true;
+  # };
+
+
+  # Declaration of versions for everything. This is useful since these
+  # versions may be used in multiple places in this Nix expression.
+  # android = {
+  #   versions = {
+  #     tools = "26.1.1";
+  #     platformTools = "31.0.2";
+  #     buildTools = "30.0.2";
+  #     ndk = [
+  #       "22.1.7171670"
+  #       "21.3.6528147" # LTS NDK
+  #     ];
+  #     cmake = "3.18.1";
+  #     emulator = "30.6.3";
+  #   };
+
+  #   platforms = ["27" "28" "29" "30"];
+  #   abis = ["armeabi-v7a" "arm64-v8a" "x86"];
+  #   extras = ["extras;google;gcm"];
+  # };
+
+  
+  # buildToolsVersion = "30.0.3";
+  # androidComposition = pkgs.androidenv.composeAndroidPackages {
+  #   toolsVersion = "26.1.1";
+  #   # platformToolsVersion = "29.0.6";
+  #   platformToolsVersion = "30.0.5";
+  #   platformVersions = [ "28" "29" "30" ];
+  #   buildToolsVersions = [buildToolsVersion];
+  #   abiVersions = [ "armeabi-v7a" "arm64-v8a" "x86"];
+
+  #   emulatorVersion = "30.3.4";
+  #   includeEmulator = true;
+
+
+  #   includeSystemImages = true;
+  #   systemImageTypes = [ "google_apis_playstore" ];
+
+  #   includeNDK = true;
+  #   ndkVersions = ["22.0.7026061"];
+
+  # };
+
+  # androidComposition = pkgs.androidenv.composeAndroidPackages {
+  #   toolsVersion = android.versions.tools;
+  #   platformToolsVersion = android.versions.platformTools;
+  #   buildToolsVersions = [android.versions.buildTools];
+  #   platformVersions = android.platforms;
+  #   abiVersions = android.abis;
+
+  #   includeSources = true;
+  #   includeSystemImages = true;
+  #   includeEmulator = true;
+  #   emulatorVersion = android.versions.emulator;
+
+  #   includeNDK = false; #true;
+  #   # ndkVersions = android.versions.ndk;
+  #   # cmakeVersions = [android.versions.cmake];
+
+  #   # useGoogleAPIs = true;
+  #   # includeExtras = android.extras;
+
+  #   # If you want to use a custom repo JSON:
+  #   # repoJson = ../repo.json;
+
+  #   # If you want to use custom repo XMLs:
+  #   /*repoXmls = {
+  #     packages = [ ../xml/repository2-1.xml ];
+  #     images = [
+  #       ../xml/android-sys-img2-1.xml
+  #       ../xml/android-tv-sys-img2-1.xml
+  #       ../xml/android-wear-sys-img2-1.xml
+  #       ../xml/android-wear-cn-sys-img2-1.xml
+  #       ../xml/google_apis-sys-img2-1.xml
+  #       ../xml/google_apis_playstore-sys-img2-1.xml
+  #     ];
+  #     addons = [ ../xml/addon2-1.xml ];
+  #   };*/
+
+  #   # Accepting more licenses declaratively:
+  #   extraLicenses = [
+  #     # Already accepted for you with the global accept_license = true or
+  #     # licenseAccepted = true on androidenv.
+  #     "android-sdk-license"
+
+  #     # These aren't, but are useful for more uncommon setups.
+  #     "android-sdk-preview-license"
+  #     "android-googletv-license"
+  #     "android-sdk-arm-dbt-license"
+  #     "google-gdk-license"
+  #     "intel-android-extra-license"
+  #     "intel-android-sysimage-license"
+  #     "mips-android-sysimage-license"
+  #   ];
+  # };
+
+  # basicEmulator = pkgs.androidenv.emulateApp {
+  #   name = "emulate-MyAndroidApp";
+  #   platformVersion = "28";
+  #   abiVersion = "x86"; # armeabi-v7a, mips, x86_64
+  #   systemImageType = "google_apis_playstore";
+  # };
+
+
+  in
+pkgs.mkShell {
+
+  buildInputs = [
+    pkgs.flutter
+    # pkgs.gradle
+    pkgs.jdk8
+    pkgs.android-studio
+
+
+    # androidComposition.androidsdk
+    # androidComposition.platform-tools
+    # basicEmulator
+  ];
+
+#   shellHook = ''
+#     export ANDROID_JAVA_HOME=${pkgs.jdk8.home}
+#     export ANDROID_SDK_ROOT="${androidComposition.androidsdk}/libexec/android-sdk"
+# '';
+
+  # GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_SDK_ROOT}/build-tools/${android.buildTools}/aapt2";
+
+  #ANDROID_SDK_ROOT = "${androidComposition.androidsdk}/libexec/android-sdk";
+  ANDROID_SDK_ROOT = "Android/Sdk";
+
+  JAVA_HOME = pkgs.jdk8.home;
+  FLUTTER_SDK = pkgs.flutter.unwrapped;
+  LANG = "C.UTF-8";
+  LC_ALL = "C.UTF-8";
+
+}
+
+
