@@ -15,6 +15,7 @@ let
     abiVersions = ["x86_64"];
     # cmakeVersions = [ "3.10.2" ];
     # includeNDK = true;
+    includeEmulator = true;
     # ndkVersions = ["22.0.7026061"];
     # useGoogleAPIs = true;
     # useGoogleTVAddOns = false;

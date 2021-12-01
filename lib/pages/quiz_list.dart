@@ -23,6 +23,8 @@ class _QuizListState extends State<QuizList> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
 
+                 Text('do something else'),
+
         //     /// Draggable
         //     Draggable<String>(
         //       // data: "data - string",

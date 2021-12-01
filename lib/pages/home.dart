@@ -47,27 +47,18 @@ class _HomeState extends State<Home> {
             bottom: TabBar(
               tabs: [
                 Tab(icon: Icon(Icons.bar_chart)),
-                // Tab(icon: Icon(Icons.email_sharp)),
-                // Tab(icon: Icon(Icons.message)),
-                // Tab(icon: Icon(Icons.miscellaneous_services)),
-                // Tab(icon: Icon(Icons.settings_applications_sharp)),
-                // Tab(icon: Icon(Icons.settings_sharp)),
-                // Tab(icon: Icon(Icons.show_chart_sharp)),
-                // Tab(icon: Icon(Icons.question_answer_sharp)),
                 Tab(icon: Icon(Icons.leaderboard_sharp)),
                 Tab(icon: Icon(Icons.build)),
                 Tab(icon: Icon(Icons.favorite_sharp)),
                 Tab(icon: Icon(Icons.home)),
               ],
             ),
-            title: Text('TabBar'),
+            title: Text('f-date'),
           ),
           body: TabBarView(
             children: [
-              // Tab(icon: Icon(Icons.bar_chart)),
               Tab(
                 child:
-                    // Questionaire(),
                     QuestionList(),
               ),
               Tab(icon: Icon(Icons.leaderboard_sharp)),

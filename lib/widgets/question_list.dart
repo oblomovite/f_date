@@ -13,41 +13,37 @@ widget will appear
 class QuestionPrompt extends StatelessWidget {
   final String? prompt;
   final List<dynamic>? responses;
-  final Function? onSelect;
-  const QuestionPrompt({this.prompt, this.responses, this.onSelect});
-
-  // QuestionPrompt.fromMap(Map<String, dynamic> data) {
-  //   this.responses = data['responses'];
-  // }
+  final VoidCallback onSelect;
+  const QuestionPrompt({
+      required this.prompt,
+      required this.responses,
+      required this.onSelect
+  });
 
   @override
   Widget build(BuildContext context) {
     /* Make this fade-in? */
     return Container(
       child: Column(children: <Widget>[
-        SizedBox(
-          child: Text(
-            // prompt,
-            "whatever",
-            
-            textAlign: TextAlign.center,
+          SizedBox(
+            child: Text(
+              prompt.toString(),
+              textAlign: TextAlign.center,
+            ),
+            height: 100.0,
+            width: 100.0,
           ),
-          height: 100.0,
-          width: 100.0,
-        ),
-        // responses! is a null check
-            for (var i in responses!)
-              Row(
-                children: [
-                  OutlinedButton(
-                    child: Text(
-                      i.toString(),
-                      textAlign: TextAlign.center,
-                    ),
-                    onPressed: () => onSelect,
-                  ),
-                ],
+          for (var i in responses!)
+          Row(children: [
+              OutlinedButton(
+                onPressed: onSelect,
+                child: Text(
+                  i.toString(),
+                  textAlign: TextAlign.center,
+                ),
               ),
+            ],
+          ),
       ]),
     );
   }
@@ -69,58 +65,57 @@ class _QuestionListState extends State<QuestionList> {
   @override
   void initState() {
     print('initialized QuestionList Component');
-    // _getThingsOnStartup().then((value){
-    //   print('Async done');
-    // });
+
+    setState(() {
+        _questionIndex = 0;
+    });
     super.initState();
   }
 
   void _toggleNext() {
+    print('click happen');
     setState(() {
-      _questionIndex += 1;
+        _questionIndex += 1;
     });
   }
 
   void _togglePrevious() {
     setState(() {
-      _questionIndex -= 1;
+        _questionIndex -= 1;
     });
   }
-
-  // Future _getThingsOnStartup() async {
-  //   await Future.delayed(Duration(seconds: 2));
-  // }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DataSnapshot>(
       future: FirebaseDatabase.instance
-          .reference()
+      .reference()
 
-          /// Todo repalce this with selectedQuiz
-          .child('myers-briggs')
-          // .child(selectedQuiz)
-          .once(),
+      /// Todo repalce this with selectedQuiz
+      .child('myers-briggs')
+      // .child(selectedQuiz)
+      .once(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         List<Widget> children;
         if (snapshot.hasData) {
           final result = snapshot.data.value;
+          var questions = <Widget>[
+            for (int i = 0; i < result.length; i++)
+            QuestionPrompt(
+              prompt: result[i]["prompt"],
+              responses: result[i]["responses"],
+              onSelect: () {
+                setState(() {
+                    print('anything?');
+                    _questionIndex += 1;
+                });
+              },
+            ),
+          ];
           children = <Widget>[
             IndexedStack(
               index: _questionIndex,
-              children: <Widget>[
-                for (int i = 0; i < result.length; i++)
-                  Column(
-                    children: <Widget>[
-                      QuestionPrompt(
-                        prompt: result[i]["prompt"],
-                        responses: result[i]["responses"],
-                        onSelect: _toggleNext,
-                      ),
-                      // Row
-                    ],
-                  )
-              ],
+              children: questions
             )
           ];
         } else {
